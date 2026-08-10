@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>AI Receptionist — Never Miss an HVAC Lead Again</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --green: #10b981;
+  --green-dark: #059669;
+  --green-dim: rgba(16,185,129,0.12);
+  --dark: #080b12;
+  --dark-2: #0d1117;
+  --dark-3: #111827;
+  --border: rgba(255,255,255,0.07);
+  --text: #f1f5f9;
+  --muted: #94a3b8;
+  --font-display: 'Syne', sans-serif;
+  --font-body: 'DM Sans', sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--dark);
+  color:var(--text);
+  font-family:var(--font-body);
+  font-size:16px;
+  line-height:1.6;
+  overflow-x:hidden;
+}
+
+/* ── Noise overlay ── */
+body::before{
+  content:'';
+  position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:0;opacity:0.6;
+}
+
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:20px 40px;
+  background:linear-gradient(180deg,rgba(8,11,18,0.95) 0%,transparent 100%);
+  backdrop-filter:blur(4px);
+}
+.nav-logo{
+  font-family:var(--font-display);
+  font-weight:800;font-size:18px;letter-spacing:-0.5px;
+  color:var(--text);
+}
+.nav-logo span{color:var(--green)}
+.nav-cta{
+  background:var(--green);color:#000;
+  padding:10px 22px;border-radius:6px;
+  font-weight:600;font-size:14px;
+  text-decoration:none;
+  transition:background 0.2s,transform 0.15s;
+}
+.nav-cta:hover{background:var(--green-dark);transform:translateY(-1px)}
+
+/* ── HERO ── */
+.hero{
+  min-height:100vh;
+  display:flex;align-items:center;justify-content:center;
+  text-align:center;
+  padding:120px 24px 80px;
+  position:relative;overflow:hidden;
+}
+.hero-glow{
+  position:absolute;top:20%;left:50%;transform:translateX(-50%);
+  width:600px;height:400px;
+  background:radial-gradient(ellipse,rgba(16,185,129,0.15) 0%,transparent 70%);
+  pointer-events:none;
+}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--green-dim);border:1px solid rgba(16,185,129,0.3);
+  padding:6px 14px;border-radius:20px;
+  font-size:12px;font-weight:600;letter-spacing:2px;text-transform:uppercase;
+  color:var(--green);margin-bottom:32px;
+}
+.hero-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+h1{
+  font-family:var(--font-display);
+  font-size:clamp(48px,7vw,88px);
+  font-weight:800;line-height:1.0;
+  letter-spacing:-2px;
+  margin-bottom:24px;
+}
+h1 .accent{color:var(--green)}
+h1 .line-2{display:block;font-size:clamp(40px,5.5vw,72px);color:var(--muted)}
+.hero-sub{
+  font-size:18px;color:var(--muted);
+  max-width:520px;margin:0 auto 48px;
+  font-weight:300;line-height:1.7;
+}
+.hero-cta-group{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.btn-primary{
+  background:var(--green);color:#000;
+  padding:16px 32px;border-radius:8px;
+  font-weight:700;font-size:15px;
+  text-decoration:none;border:none;cursor:pointer;
+  font-family:var(--font-body);
+  transition:all 0.2s;
+}
+.btn-primary:hover{background:var(--green-dark);transform:translateY(-2px);box-shadow:0 8px 30px rgba(16,185,129,0.3)}
+.btn-ghost{
+  background:transparent;color:var(--text);
+  padding:16px 32px;border-radius:8px;
+  font-weight:500;font-size:15px;
+  text-decoration:none;border:1px solid var(--border);cursor:pointer;
+  font-family:var(--font-body);
+  transition:all 0.2s;
+}
+.btn-ghost:hover{border-color:var(--green);color:var(--green)}
+
+/* ── STATS ── */
+.stats{
+  display:flex;justify-content:center;gap:0;
+  margin-top:72px;
+  border:1px solid var(--border);border-radius:12px;
+  background:var(--dark-2);
+  overflow:hidden;
+  max-width:680px;margin-left:auto;margin-right:auto;
+}
+.stat{
+  flex:1;padding:28px 24px;text-align:center;
+  border-right:1px solid var(--border);
+}
+.stat:last-child{border-right:none}
+.stat-number{
+  font-family:var(--font-display);
+  font-size:36px;font-weight:800;
+  color:var(--green);
+}
+.stat-label{font-size:12px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-top:4px}
+
+/* ── HOW IT WORKS ── */
+.section{padding:100px 24px}
+.container{max-width:1100px;margin:0 auto}
+.section-label{
+  font-size:11px;letter-spacing:4px;text-transform:uppercase;
+  color:var(--green);font-weight:700;margin-bottom:16px;
+}
+.section-title{
+  font-family:var(--font-display);
+  font-size:clamp(32px,4vw,52px);font-weight:800;
+  letter-spacing:-1px;margin-bottom:16px;
+}
+.section-sub{font-size:17px;color:var(--muted);max-width:500px;line-height:1.7;margin-bottom:60px}
+
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:24px}
+.step{
+  background:var(--dark-2);
+  border:1px solid var(--border);
+  border-radius:12px;padding:32px 28px;
+  position:relative;overflow:hidden;
+  transition:border-color 0.2s;
+}
+.step:hover{border-color:rgba(16,185,129,0.4)}
+.step::before{
+  content:attr(data-n);
+  position:absolute;top:-12px;right:16px;
+  font-family:var(--font-display);
+  font-size:80px;font-weight:800;
+  color:rgba(16,185,129,0.06);
+  line-height:1;pointer-events:none;
+}
+.step-icon{
+  width:44px;height:44px;border-radius:10px;
+  background:var(--green-dim);border:1px solid rgba(16,185,129,0.25);
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;margin-bottom:20px;
+}
+.step h3{
+  font-family:var(--font-display);
+  font-size:18px;font-weight:700;margin-bottom:10px;
+}
+.step p{font-size:14px;color:var(--muted);line-height:1.6}
+
+/* ── FEATURES ── */
+.features-section{
+  background:var(--dark-2);
+  border-top:1px solid var(--border);
+  border-bottom:1px solid var(--border);
+}
+.features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1px;background:var(--border)}
+.feature{
+  background:var(--dark-2);padding:40px 36px;
+  transition:background 0.2s;
+}
+.feature:hover{background:var(--dark-3)}
+.feature-tag{
+  font-size:10px;letter-spacing:3px;text-transform:uppercase;
+  color:var(--green);font-weight:700;margin-bottom:14px;
+}
+.feature h3{
+  font-family:var(--font-display);
+  font-size:20px;font-weight:700;margin-bottom:12px;
+}
+.feature p{font-size:14px;color:var(--muted);line-height:1.7}
+
+/* ── DEMO SECTION ── */
+.demo-section{padding:100px 24px;text-align:center}
+.demo-card{
+  max-width:580px;margin:0 auto;scroll-margin-top:88px;
+  background:var(--dark-2);
+  border:1px solid var(--border);
+  border-radius:16px;overflow:hidden;
+}
+.demo-header{
+  background:linear-gradient(135deg,#1e3a5f,var(--green));
+  padding:36px 40px;
+}
+.demo-header h2{
+  font-family:var(--font-display);
+  font-size:26px;font-weight:800;color:#fff;margin-bottom:8px;
+}
+.demo-header p{color:rgba(255,255,255,0.75);font-size:14px}
+.demo-body{padding:40px}
+
+/* Form */
+.form-group{margin-bottom:20px;text-align:left}
+.form-label{
+  display:block;font-size:12px;letter-spacing:1px;
+  text-transform:uppercase;color:var(--muted);
+  margin-bottom:8px;font-weight:600;
+}
+.form-input{
+  width:100%;padding:14px 16px;
+  background:#111827;
+  border:1px solid var(--border);
+  border-radius:8px;
+  color:var(--text);font-size:15px;
+  font-family:var(--font-body);
+  outline:none;transition:border-color 0.2s;
+}
+.form-input:focus{border-color:var(--green)}
+.form-input::placeholder{color:#4b5563}
+.form-note{font-size:12px;color:var(--muted);margin-top:16px;line-height:1.5}
+
+/* Guided steps EN/ES */
+.demo-steps{list-style:none;text-align:left;margin:0 0 26px;padding:0}
+.demo-steps li{
+  display:flex;gap:12px;align-items:flex-start;
+  padding:12px 14px;margin-bottom:8px;
+  background:#111827;border:1px solid var(--border);border-radius:10px;
+  font-size:14px;line-height:1.4;
+}
+.demo-steps .n{
+  flex:none;width:26px;height:26px;border-radius:50%;
+  background:var(--green);color:#000;font-weight:800;font-size:13px;
+  display:flex;align-items:center;justify-content:center;
+}
+.demo-steps .es{display:block;color:var(--muted);font-size:12.5px;margin-top:2px}
+/* Inline email + start button */
+.demo-inputrow{display:flex;gap:10px;align-items:stretch}
+.demo-inputrow .form-input{flex:1;margin:0}
+.demo-inputrow .btn-primary{white-space:nowrap;padding:0 22px}
+.demo-dash-btn{display:block;text-align:center;margin-top:16px}
+
+/* Parallel instruction steps */
+.istep{display:flex;gap:16px;text-align:left;padding:22px 0;border-top:1px solid var(--border)}
+.istep:first-child{border-top:none;padding-top:0}
+.istep-n{
+  flex:none;width:32px;height:32px;border-radius:50%;
+  background:var(--green);color:#000;font-weight:800;font-size:15px;
+  display:flex;align-items:center;justify-content:center;
+}
+.istep-body{flex:1;min-width:0}
+.istep-t{font-weight:600;font-size:15px;margin-bottom:3px;line-height:1.35}
+.istep-s{font-size:13px;color:var(--muted);margin-bottom:14px;line-height:1.4}
+.istep-s #echo-email{color:var(--green);font-weight:600}
+.istep-row{display:flex;flex-direction:column;gap:12px}
+.istep-row .form-input{width:100%;margin:0}
+.email-big{padding:18px 18px;font-size:17px;height:auto}
+.istep-btn{width:100%;white-space:nowrap;padding:16px 20px;font-size:16px}
+.istep-ok{font-size:13px;color:var(--green);font-weight:700;margin-top:10px;min-height:1px}
+.btn-dash{display:inline-block;font-size:17px;padding:16px 30px;font-weight:800;box-shadow:0 8px 30px rgba(16,185,129,0.25)}
+@media(max-width:640px){.btn-dash{display:block;text-align:center}}
+
+/* Widget container */
+#widget-area{display:none;text-align:center}
+.widget-intro{
+  background:var(--green-dim);
+  border:1px solid rgba(16,185,129,0.25);
+  border-radius:10px;padding:20px;margin-bottom:24px;
+}
+.widget-intro strong{color:var(--green)}
+.widget-intro p{font-size:14px;color:var(--muted);margin-top:6px}
+
+/* ── PRICING ── */
+.pricing-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:24px;max-width:900px;margin:0 auto;
+}
+.pricing-card{
+  background:var(--dark-2);
+  border:1px solid var(--border);
+  border-radius:14px;padding:40px 36px;
+  transition:border-color 0.2s;
+  position:relative;
+}
+.pricing-card:hover{border-color:rgba(16,185,129,0.3)}
+.pricing-card.featured{
+  border-color:var(--green);
+  background:linear-gradient(160deg,rgba(16,185,129,0.06) 0%,var(--dark-2) 100%);
+}
+.pricing-badge{
+  position:absolute;top:-12px;left:50%;transform:translateX(-50%);
+  background:var(--green);color:#000;
+  padding:4px 14px;border-radius:20px;
+  font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;
+}
+.price{
+  font-family:var(--font-display);
+  font-size:52px;font-weight:800;
+  color:var(--text);margin:16px 0 4px;
+}
+.price sub{font-size:20px;font-weight:400;color:var(--muted)}
+.price sup{font-size:24px;vertical-align:top;margin-top:12px;display:inline-block}
+.pricing-name{
+  font-size:13px;letter-spacing:2px;text-transform:uppercase;
+  color:var(--green);font-weight:700;
+}
+.pricing-desc{font-size:14px;color:var(--muted);margin-bottom:28px;line-height:1.6}
+.pricing-features{list-style:none;margin-bottom:32px}
+.pricing-features li{
+  font-size:14px;color:var(--muted);
+  padding:8px 0;
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:10px;
+}
+.pricing-features li::before{content:'✓';color:var(--green);font-weight:700;font-size:13px}
+
+/* ── FOOTER ── */
+footer{
+  border-top:1px solid var(--border);
+  padding:40px;text-align:center;
+  color:var(--muted);font-size:13px;
+}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+.fade-up{animation:fadeUp 0.7s ease both}
+.fade-up-1{animation-delay:0.1s}
+.fade-up-2{animation-delay:0.2s}
+.fade-up-3{animation-delay:0.35s}
+.fade-up-4{animation-delay:0.5s}
+
+@media(max-width:640px){
+  nav{padding:16px 20px}
+  .stats{flex-direction:column}
+  .stat{border-right:none;border-bottom:1px solid var(--border)}
+  .stat:last-child{border-bottom:none}
+  .demo-body{padding:24px 20px}
+  .demo-header{padding:28px 20px}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">AI<span>Reception</span></div>
+  <a href="#start" class="nav-cta">Try Free Demo</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div style="position:relative;z-index:1">
+    <div class="hero-badge fade-up">
+      <span></span> Powered by ElevenLabs AI
+    </div>
+    <h1 class="fade-up fade-up-1">
+      Never Miss<br>
+      <span class="accent">Another</span>
+      <span class="line-2">HVAC Lead</span>
+    </h1>
+    <p class="hero-sub fade-up fade-up-2">
+      Your AI receptionist answers every call 24/7 — qualifies leads, captures details,
+      and emails you instantly. In English, Spanish, Portuguese, and French.
+    </p>
+    <div class="hero-cta-group fade-up fade-up-3">
+      <a href="#start" class="btn-primary" style="font-size:18px;padding:20px 46px">Try it now · Probar demo</a>
+    </div>
+
+    <div class="stats fade-up fade-up-4">
+      <div class="stat">
+        <div class="stat-number">24/7</div>
+        <div class="stat-label">Always On</div>
+      </div>
+      <div class="stat">
+        <div class="stat-number">4</div>
+        <div class="stat-label">Languages</div>
+      </div>
+      <div class="stat">
+        <div class="stat-number">&lt;60s</div>
+        <div class="stat-label">Lead to Email</div>
+      </div>
+      <div class="stat">
+        <div class="stat-number">$0</div>
+        <div class="stat-label">Missed Calls</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section" id="how">
+  <div class="container">
+    <div class="section-label">How It Works</div>
+    <h2 class="section-title">From call to email<br>in under 60 seconds</h2>
+    <p class="section-sub">Your AI receptionist handles the entire intake — so you can focus on the job.</p>
+
+    <!-- HOW-IT-WORKS VIDEO: set VIDEO_EMBED_URL in the script (bottom) to a YouTube/Loom EMBED url to show this -->
+    <div id="howVideo" style="display:none;max-width:820px;margin:0 auto 56px">
+      <div style="position:relative;padding-top:56.25%;border:1px solid var(--border);border-radius:14px;overflow:hidden">
+        <iframe id="howVideoFrame" src="" title="How it works" allow="autoplay; fullscreen; picture-in-picture; clipboard-write" allowfullscreen style="position:absolute;inset:0;width:100%;height:100%;border:0"></iframe>
+      </div>
+    </div>
+
+    <div class="steps">
+      <div class="step" data-n="1">
+        <h3>Customer Calls</h3>
+        <p>Your dedicated number rings. Maria answers immediately in the caller's language — English, Spanish, Portuguese, or French.</p>
+      </div>
+      <div class="step" data-n="2">
+        <h3>Full Intake</h3>
+        <p>Maria captures the issue, property type, preferred time, ZIP code, and confirms everything back to the customer before hanging up.</p>
+      </div>
+      <div class="step" data-n="3">
+        <h3>You Get the Lead</h3>
+        <p>An email lands in your inbox with an AI summary of the call, all details, availability, and a link to your dashboard.</p>
+      </div>
+      <div class="step" data-n="4">
+        <h3>You Close the Job</h3>
+        <p>Review leads in your dashboard, update status, and track your pipeline. Every call captured, nothing lost.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features-section">
+  <div class="container" style="padding:0">
+    <div class="features-grid">
+      <div class="feature">
+        <div class="feature-tag">Multilingual</div>
+        <h3>Speaks Your Customer's Language</h3>
+        <p>Auto-detects English, Spanish, Portuguese, and French. Switches instantly mid-call if the customer changes language.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-tag">Smart Capture</div>
+        <h3>Converts Spoken Words to Data</h3>
+        <p>ZIP codes spoken as "three three one three zero" become 33130. Times like "two p.m." become 2 PM. Clean data every time.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-tag">AI Summary</div>
+        <h3>Every Call Summarized</h3>
+        <p>ElevenLabs AI generates a clear, readable summary of each conversation. No transcripts to parse — just what matters.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-tag">Multi-Tenant</div>
+        <h3>Built to Scale</h3>
+        <p>Add new HVAC companies in minutes. Each client gets their own number, agent, dashboard, and notification email.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-tag">Emergency Detection</div>
+        <h3>Flags Urgent Calls</h3>
+        <p>Automatically detects emergency requests and marks them with priority badges in your email and dashboard.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-tag">Live Dashboard</div>
+        <h3>Your Leads, Your Pipeline</h3>
+        <p>Track every lead from new to won. Update status, view call details, and manage your pipeline in real time.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DEMO -->
+<section class="demo-section" id="demo">
+  <div class="section-label" style="margin-bottom:16px">Live Demo</div>
+  <h2 class="section-title" style="margin-bottom:12px">Talk to the agent now · Habla con el agente</h2>
+  <p style="color:var(--muted);margin-bottom:48px;font-size:16px">Follow the 4 steps below. · Sigue los 4 pasos.</p>
+
+  <div class="demo-card" id="start">
+    <div class="demo-header">
+      <h2>South Flow Air — AI Demo</h2>
+      <p>You're about to speak with Maria, our AI receptionist</p>
+    </div>
+    <div class="demo-body">
+
+      <!-- Step 1: email + confirm (one block) -->
+      <div class="istep">
+        <div class="istep-n">1</div>
+        <div class="istep-body">
+          <p class="istep-t">Enter your email and confirm</p>
+          <p class="istep-s">Escribe tu correo y confirma</p>
+          <div class="istep-row">
+            <input class="form-input email-big" id="biz-email" type="email" placeholder="you@business.com · tu@correo.com">
+            <button class="btn-primary istep-btn" id="confirmBtn" onclick="confirmEmail()">Confirm · Confirmar</button>
+          </div>
+          <p class="istep-ok" id="email-ok"></p>
+        </div>
+      </div>
+
+      <!-- Step 2: call button + mic + talk -->
+      <div class="istep">
+        <div class="istep-n">2</div>
+        <div class="istep-body">
+          <p class="istep-t">Click the call button, allow the microphone, and speak with the agent</p>
+          <p class="istep-s">Pulsa el botón de llamada, permite el micrófono y habla con el agente · EN / ES / PT / FR</p>
+          <elevenlabs-convai agent-id="agent_0301kstp9w36en2rs3bsyamg4p1f" style="display:block"></elevenlabs-convai>
+        </div>
+      </div>
+
+      <!-- Step 3: receive email -->
+      <div class="istep">
+        <div class="istep-n">3</div>
+        <div class="istep-body">
+          <p class="istep-t">You'll receive the summary on your email</p>
+          <p class="istep-s">Recibirás el resumen en tu correo <span id="echo-email"></span></p>
+        </div>
+      </div>
+
+      <!-- Step 4: dashboard -->
+      <div class="istep">
+        <div class="istep-n">4</div>
+        <div class="istep-body">
+          <p class="istep-t">Click the button in the email — or here — to see your leads</p>
+          <p class="istep-s">Pulsa el botón del correo, o aquí, para ver tus leads</p>
+          <a href="https://ai-process.net/?tenant=south_flow_air" target="_blank" rel="noopener" class="btn-primary btn-dash">Open dashboard · Ver el panel</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div style="margin-top:32px">
+    <div class="section-label" style="margin-bottom:10px">Agent Factory &middot; Live</div>
+    <p class="section-sub" style="margin:0 auto 18px;max-width:540px;text-align:center">Watch our autonomous software factory work in real time &mdash; Architect &rarr; Builder &rarr; Tester agents shipping features from the backlog, with live test verdicts.</p>
+    <a href="/factory-dashboard.html" class="btn-primary" style="display:inline-block">Open Agent Factory dashboard</a>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="section" style="padding-top:0">
+  <div class="container" style="text-align:center">
+    <div class="section-label">Pricing</div>
+    <h2 class="section-title" style="margin-bottom:12px">Simple, transparent</h2>
+    <p style="color:var(--muted);margin-bottom:48px;font-size:16px">One price per location. No setup fees. No long-term contracts.</p>
+    <div class="pricing-grid">
+      <div class="pricing-card">
+        <div class="pricing-name">Starter</div>
+        <div class="price"><sup>$</sup>299<sub>/mo</sub></div>
+        <p class="pricing-desc">Perfect for single-location operators running paid ads.</p>
+        <ul class="pricing-features">
+          <li>1 dedicated phone number</li>
+          <li>Unlimited calls</li>
+          <li>4 languages</li>
+          <li>Email notifications</li>
+          <li>Lead dashboard</li>
+          <li>AI call summaries</li>
+        </ul>
+        <a href="#start" class="btn-ghost" style="display:block;text-align:center">Try Demo First</a>
+      </div>
+      <div class="pricing-card featured">
+        <div class="pricing-badge">Most Popular</div>
+        <div class="pricing-name">Growth</div>
+        <div class="price"><sup>$</sup>499<sub>/mo</sub></div>
+        <p class="pricing-desc">For growing operators who can't afford to miss a single call.</p>
+        <ul class="pricing-features">
+          <li>2 dedicated numbers</li>
+          <li>Unlimited calls</li>
+          <li>4 languages</li>
+          <li>Priority email + SMS alerts</li>
+          <li>Advanced dashboard</li>
+          <li>AI summaries + transcripts</li>
+          <li>Emergency call flagging</li>
+        </ul>
+        <a href="#start" class="btn-primary" style="display:block;text-align:center">Get Started</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div style="margin-bottom:8px;font-family:'Syne',sans-serif;font-weight:700;font-size:16px">
+    AI<span style="color:var(--green)">Reception</span>
+  </div>
+  Built on ElevenLabs Conversational AI · Miami, FL
+</footer>
+
+<!-- ElevenLabs Widget Script -->
+<script src="https://elevenlabs.io/convai-widget/index.js" async type="text/javascript"></script>
+
+<script>
+// === HOW-IT-WORKS VIDEO ===
+// Paste a YouTube or Loom EMBED url between the quotes to show the video on the page.
+// YouTube embed looks like: https://www.youtube.com/embed/VIDEO_ID
+// Loom embed looks like:    https://www.loom.com/embed/VIDEO_ID
+var VIDEO_EMBED_URL = "";
+if (VIDEO_EMBED_URL) {
+  var _vf=document.getElementById('howVideoFrame'), _vw=document.getElementById('howVideo');
+  if(_vf && _vw){ _vf.src=VIDEO_EMBED_URL; _vw.style.display='block'; }
+}
+
+function confirmEmail(){
+  var el=document.getElementById('biz-email');
+  var email=el.value.trim();
+  if(!email || !email.includes('@')){
+    el.style.borderColor='#ef4444'; el.value='';
+    el.placeholder='Enter a valid email · Correo válido';
+    return;
+  }
+  el.style.borderColor='var(--green)';
+  var ok=document.getElementById('email-ok'); if(ok) ok.textContent='Confirmed · Confirmado';
+  var echo=document.getElementById('echo-email'); if(echo) echo.textContent='('+email+')';
+
+  // Capture the lead in n8n (fire and forget)
+  fetch('https://ai-process.app.n8n.cloud/webhook/hvac-demo-lead', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({ email:email, company:'', source:'landing_page', timestamp:new Date().toISOString() })
+  }).catch(function(){});
+
+  // Pass prospect email to the agent so the post-call summary routes to them
+  var widget=document.querySelector('elevenlabs-convai');
+  if(widget){
+    widget.setAttribute('dynamic-variables', JSON.stringify({
+      prospect_email: email, prospect_company:'', source:'website_demo'
+    }));
+  }
+}
+
+document.getElementById('biz-email').addEventListener('keydown', function(e){
+  if(e.key==='Enter') confirmEmail();
+});
+
+// Top button & all CTAs: scroll straight to the email field (step 2 sits just below)
+function goToDemoField(e){
+  if(e){ e.preventDefault(); }
+  var el=document.getElementById('biz-email');
+  if(!el) return;
+  var y=el.getBoundingClientRect().top + window.pageYOffset - 110; // clear the fixed nav, field near top
+  window.scrollTo({ top:y, behavior:'smooth' });
+  setTimeout(function(){ el.focus({preventScroll:true}); }, 550);
+}
+document.querySelectorAll('a[href="#start"]').forEach(function(a){
+  a.addEventListener('click', goToDemoField);
+});
+</script>
+
+</body>
+</html>
