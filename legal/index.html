@@ -87,6 +87,13 @@ nav{
   border-right:1px solid var(--rule);
 }
 .strip div:last-child{border-right:0}
+.proof{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid var(--rule)}
+.proof div{padding:22px 24px;border-right:1px solid var(--rule)}
+.proof div:last-child{border-right:0}
+.proof b{display:block;font-family:var(--serif);font-size:34px;line-height:1;font-variant-numeric:tabular-nums}
+.proof span{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--graphite);display:block;margin-top:8px}
+.proof-note{font-family:var(--mono);font-size:11px;color:var(--graphite);padding:14px 0 0;border-bottom:0}
+@media (max-width:700px){.proof{grid-template-columns:repeat(2,1fr)}.proof div{border-bottom:1px solid var(--rule)}}
 
 /* ---------- generic section ---------- */
 section{padding:84px 0}
@@ -246,6 +253,14 @@ footer{padding:34px 0;font-family:var(--mono);font-size:11px;letter-spacing:.1em
   <div data-i="strip4">Outlook / Microsoft 365 · Gmail</div>
 </div></div>
 
+<div class="wrap"><div class="proof">
+  <div><b>191</b><span data-i="p1">E-Mails einsortiert</span></div>
+  <div><b>0</b><span data-i="p2">im Posteingang übrig</span></div>
+  <div><b>46</b><span data-i="p3">Antwortentwürfe</span></div>
+  <div><b>5</b><span data-i="p4">Ordner, automatisch</span></div>
+</div>
+<p class="proof-note" data-i="p5">Gemessen in einem echten Microsoft-365-Postfach, Stand 12. August 2026. Nichts davon wurde ohne Freigabe versendet.</p></div>
+
 <!-- CALCULATOR -->
 <section id="calc">
   <div class="wrap">
@@ -404,6 +419,9 @@ footer{padding:34px 0;font-family:var(--mono);font-size:11px;letter-spacing:.1em
 const T = {
  en:{
   nav_cta:"Book a demo",
+  p1:"emails filed", p2:"left in the inbox", p3:"draft replies", p4:"folders, automatic",
+  p5:"Measured in a live Microsoft 365 mailbox, 12 August 2026. Nothing was sent without approval.",
+
   hero_eyebrow:"For law firms & in-house counsel",
   hero_h1a:"Your firm's most expensive employee is",
   hero_h1b:"the inbox",
