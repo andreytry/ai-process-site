@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI-Process · Legal — Ihr Posteingang, sortiert. Ihre Stunden, zurück.</title>
+<meta name="description" content="E-Mail-Triage für Kanzleien: sortiert, priorisiert, erkennt Fristen und schreibt Antwortentwürfe — DE/EN/FR/ES. DSGVO-konform, gehostet in Deutschland. Live-Demo auf der Seite."/>
+<link rel="icon" href="/aiprocess-logo-badge.png"/>
+<meta property="og:title" content="AI-Process · Legal — Der teuerste Mitarbeiter Ihrer Kanzlei ist der Posteingang"/>
+<meta property="og:description" content="Live-Demo: echte E-Mail einfügen, sortierte Ablage, Frist und Antwortentwurf in Sekunden. DSGVO-konform, Hosting in Deutschland."/>
+<meta property="og:image" content="https://ai-process.net/system_in_action.png"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,300;8..60,400;8..60,600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#ffffff;
+  --ink:#0a0a0a;
+  --graphite:#6b6863;
+  --rule:#d9d8d4;
+  --tint:#f2f2f0;
+  --seal:#a11b1b;
+  --serif:"Source Serif 4",Georgia,"Times New Roman",serif;
+  --sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;background:var(--paper);color:var(--ink);
+  font-family:var(--sans);font-size:17px;line-height:1.62;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:1080px;margin:0 auto;padding:0 28px}
+.eyebrow{
+  font-family:var(--mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--graphite);display:block;margin-bottom:22px;
+}
+.eyebrow b{color:var(--seal);font-weight:500}
+h1,h2,h3{font-family:var(--serif);font-weight:400;letter-spacing:-.015em;margin:0}
+h1{font-size:clamp(38px,6.2vw,70px);line-height:1.04}
+h2{font-size:clamp(28px,4vw,42px);line-height:1.1}
+h3{font-size:20px;line-height:1.3}
+p{margin:0 0 18px}
+a{color:inherit}
+hr.rule{border:0;border-top:1px solid var(--rule);margin:0}
+
+/* ---------- nav ---------- */
+nav{
+  position:sticky;top:0;z-index:50;background:rgba(255,255,255,.92);
+  backdrop-filter:blur(8px);border-bottom:1px solid var(--rule);
+}
+.nav-in{display:flex;align-items:center;justify-content:space-between;height:64px}
+.brand{font-family:var(--mono);font-size:13px;letter-spacing:.1em;text-transform:uppercase;text-decoration:none}
+.brand span{color:var(--seal)}
+.nav-right{display:flex;align-items:center;gap:18px}
+.lang{display:flex;border:1px solid var(--rule)}
+.lang button{
+  font-family:var(--mono);font-size:11px;letter-spacing:.1em;padding:6px 10px;
+  background:none;border:0;cursor:pointer;color:var(--graphite);
+}
+.lang button[aria-pressed="true"]{background:var(--ink);color:#fff}
+.btn{
+  display:inline-block;font-family:var(--sans);font-size:14px;font-weight:500;
+  padding:12px 22px;background:var(--ink);color:#fff;text-decoration:none;border:1px solid var(--ink);
+  cursor:pointer;transition:background .18s ease,color .18s ease;
+}
+.btn:hover{background:#fff;color:var(--ink)}
+.btn.ghost{background:none;color:var(--ink)}
+.btn.ghost:hover{background:var(--ink);color:#fff}
+.btn.sm{padding:9px 16px;font-size:13px}
+
+/* ---------- hero ---------- */
+.hero{padding:96px 0 72px;border-bottom:1px solid var(--rule)}
+.hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:56px;align-items:end}
+.hero h1 em{font-style:normal;color:var(--seal)}
+.lead{font-family:var(--serif);font-size:21px;line-height:1.5;color:#2b2a28;max-width:46ch;margin-top:26px}
+.hero-cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:34px}
+.ticker{border:1px solid var(--rule);padding:26px 24px}
+.ticker .lbl{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--graphite)}
+.ticker .big{font-family:var(--serif);font-size:clamp(34px,5vw,50px);line-height:1;margin:10px 0 4px;color:var(--seal);font-variant-numeric:tabular-nums}
+.ticker .sub{font-size:14px;color:var(--graphite);line-height:1.45}
+.strip{display:flex;flex-wrap:wrap;gap:0;border-bottom:1px solid var(--rule)}
+.strip div{
+  flex:1 1 200px;padding:16px 24px;font-family:var(--mono);font-size:11px;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--graphite);
+  border-right:1px solid var(--rule);
+}
+.strip div:last-child{border-right:0}
+
+/* ---------- generic section ---------- */
+section{padding:84px 0}
+.sec-head{max-width:60ch;margin-bottom:44px}
+.sec-head p{color:var(--graphite);margin-top:16px;margin-bottom:0}
+
+/* ---------- calculator ---------- */
+#calc{background:var(--tint);border-top:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+.calc-grid{display:grid;grid-template-columns:1fr 1.05fr;gap:0;border:1px solid var(--rule);background:#fff}
+.inputs{padding:34px}
+.field{margin-bottom:26px}
+.field:last-child{margin-bottom:0}
+.field label{display:flex;justify-content:space-between;align-items:baseline;font-size:14px;margin-bottom:10px}
+.field .val{font-family:var(--mono);font-size:14px;font-variant-numeric:tabular-nums}
+input[type=range]{width:100%;-webkit-appearance:none;appearance:none;background:none;height:22px;cursor:pointer}
+input[type=range]::-webkit-slider-runnable-track{height:2px;background:var(--rule)}
+input[type=range]::-moz-range-track{height:2px;background:var(--rule)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;background:var(--ink);border-radius:50%;margin-top:-6px}
+input[type=range]::-moz-range-thumb{width:14px;height:14px;background:var(--ink);border:0;border-radius:50%}
+input[type=range]:focus-visible{outline:2px solid var(--seal);outline-offset:4px}
+.results{padding:34px;border-left:1px solid var(--rule);display:flex;flex-direction:column;justify-content:center}
+.res-row{display:flex;justify-content:space-between;align-items:baseline;padding:14px 0;border-bottom:1px solid var(--rule)}
+.res-row:last-of-type{border-bottom:0}
+.res-row span{font-size:14.5px;color:var(--graphite);max-width:22ch}
+.res-row b{font-family:var(--mono);font-size:19px;font-weight:500;font-variant-numeric:tabular-nums}
+.res-hero{margin-top:22px;padding-top:22px;border-top:2px solid var(--ink)}
+.res-hero .lbl{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--graphite)}
+.res-hero .num{font-family:var(--serif);font-size:clamp(36px,5.5vw,54px);line-height:1.05;color:var(--seal);font-variant-numeric:tabular-nums;margin-top:8px}
+.assump{font-family:var(--mono);font-size:11px;color:var(--graphite);margin-top:22px;line-height:1.7}
+
+/* ---------- steps ---------- */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-top:1px solid var(--rule)}
+.step{padding:32px 28px 32px 0;border-right:1px solid var(--rule)}
+.step:last-child{border-right:0;padding-right:0}
+.step:not(:first-child){padding-left:28px}
+.step .n{font-family:var(--mono);font-size:11px;letter-spacing:.16em;color:var(--seal);display:block;margin-bottom:14px}
+.step p{font-size:15.5px;color:var(--graphite);margin:12px 0 0}
+.caps{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--rule);border:1px solid var(--rule);margin-top:56px}
+.cap{background:#fff;padding:26px}
+.cap h3{font-size:17px;font-family:var(--sans);font-weight:600;letter-spacing:0}
+.cap p{font-size:14.5px;color:var(--graphite);margin:8px 0 0}
+
+/* ---------- demo ---------- */
+#demo{background:var(--ink);color:#fff;border-top:1px solid var(--ink)}
+#demo .sec-head p{color:#a8a5a0}
+#demo h2{color:#fff}
+#demo .eyebrow{color:#8d8a85}
+.demo-grid{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:start}
+.pane{border:1px solid #2e2c2a;background:#131211}
+.pane-head{
+  display:flex;justify-content:space-between;align-items:center;gap:12px;
+  padding:12px 16px;border-bottom:1px solid #2e2c2a;
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:#8d8a85;
+}
+.samples{display:flex;gap:6px;flex-wrap:wrap}
+.samples button{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;padding:5px 9px;
+  background:none;border:1px solid #3a3836;color:#c9c6c1;cursor:pointer;
+}
+.samples button:hover{background:#fff;color:var(--ink);border-color:#fff}
+textarea{
+  width:100%;min-height:290px;background:#131211;color:#eceae6;border:0;padding:20px;
+  font-family:var(--mono);font-size:13px;line-height:1.7;resize:vertical;
+}
+textarea:focus{outline:none;box-shadow:inset 0 0 0 1px var(--seal)}
+.run{display:flex;align-items:center;gap:16px;padding:14px 16px;border-top:1px solid #2e2c2a}
+.run .btn{background:#fff;color:var(--ink);border-color:#fff}
+.run .btn:hover{background:transparent;color:#fff}
+.run .btn[disabled]{opacity:.45;cursor:default}
+.hint{font-family:var(--mono);font-size:11px;color:#8d8a85}
+.out{padding:20px;min-height:290px}
+.placeholder{font-family:var(--mono);font-size:12.5px;color:#6f6c68;line-height:1.8}
+.stamp{border:1px solid #3a3836;padding:16px;margin-bottom:14px;animation:rise .35s ease both}
+@keyframes rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.stamp-top{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.tag{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;
+  padding:4px 9px;border:1px solid #3a3836;color:#c9c6c1;
+}
+.tag.hot{background:var(--seal);border-color:var(--seal);color:#fff}
+.tag.cool{border-color:#4d8a6a;color:#7fc4a0}
+.kv{display:grid;grid-template-columns:120px 1fr;gap:6px 14px;font-size:13.5px}
+.kv dt{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:#8d8a85;padding-top:3px}
+.kv dd{margin:0;color:#eceae6}
+.draft{border:1px solid #3a3836;padding:16px;animation:rise .45s ease both}
+.draft h4{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:#8d8a85;margin:0 0 12px;font-weight:400}
+.draft pre{
+  margin:0;white-space:pre-wrap;font-family:var(--serif);font-size:15px;line-height:1.65;color:#eceae6;
+}
+.err{border:1px solid var(--seal);padding:16px;font-family:var(--mono);font-size:12.5px;color:#f0b3b3}
+
+/* ---------- trust ---------- */
+.trust{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--rule);border:1px solid var(--rule)}
+.trust div{background:#fff;padding:28px}
+.trust h3{font-family:var(--sans);font-size:16px;font-weight:600}
+.trust p{font-size:14.5px;color:var(--graphite);margin:8px 0 0}
+
+/* ---------- close ---------- */
+#close{border-top:1px solid var(--rule);background:var(--tint)}
+.close-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:56px;align-items:center}
+.close-list{list-style:none;padding:0;margin:0;border-top:1px solid var(--rule)}
+.close-list li{padding:13px 0;border-bottom:1px solid var(--rule);display:flex;gap:14px;font-size:15px}
+.close-list li b{font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--seal);padding-top:4px;min-width:26px}
+footer{padding:34px 0;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--graphite);display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;border-top:1px solid var(--rule)}
+
+@media (max-width:900px){
+  .hero-grid,.calc-grid,.demo-grid,.close-grid{grid-template-columns:1fr}
+  .results{border-left:0;border-top:1px solid var(--rule)}
+  .steps,.caps,.trust{grid-template-columns:1fr}
+  .step{border-right:0;border-bottom:1px solid var(--rule);padding:26px 0}
+  .step:not(:first-child){padding-left:0}
+  .hero{padding:64px 0 52px}
+  section{padding:60px 0}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+:focus-visible{outline:2px solid var(--seal);outline-offset:3px}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap nav-in">
+    <a class="brand" href="/">AI-Process<span>·</span>Legal</a>
+    <div class="nav-right">
+      <div class="lang" role="group" aria-label="Sprache">
+        <button data-lang="de" aria-pressed="true">DE</button>
+        <button data-lang="en" aria-pressed="false">EN</button>
+      </div>
+      <a class="btn sm" href="#close" data-i="nav_cta">Demo buchen</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="eyebrow"><b>§</b> &nbsp;<span data-i="hero_eyebrow">Für Kanzleien &amp; Rechtsabteilungen</span></span>
+      <h1><span data-i="hero_h1a">Der teuerste Mitarbeiter Ihrer Kanzlei ist</span> <em data-i="hero_h1b">Ihr Posteingang</em>.</h1>
+      <p class="lead" data-i="hero_lead">Jede Stunde, die eine Anwältin mit Sortieren, Zuordnen und Ablegen von E-Mails verbringt, ist eine Stunde, die niemand abrechnet. Unser System liest, sortiert, priorisiert und beantwortet den Posteingang — auf Deutsch, Englisch, Französisch und Spanisch. DSGVO-konform, gehostet in Deutschland.</p>
+      <div class="hero-cta">
+        <a class="btn" href="#demo" data-i="hero_cta1">Live-Demo testen</a>
+        <a class="btn ghost" href="#calc" data-i="hero_cta2">Kosten berechnen</a>
+      </div>
+    </div>
+    <div class="ticker">
+      <div class="lbl" data-i="tick_lbl">Nicht abgerechnet — pro Jahr</div>
+      <div class="big" id="heroNum">450.000 €</div>
+      <div class="sub" data-i="tick_sub">Kanzlei mit 5 Berufsträgern, 1,5 Std. Postbearbeitung pro Tag, 250 €/Std., 20 Arbeitstage im Monat.</div>
+    </div>
+  </div>
+</header>
+
+<div class="wrap"><div class="strip">
+  <div data-i="strip1">Hosting in Deutschland</div>
+  <div data-i="strip2">DSGVO &amp; Mandatsgeheimnis</div>
+  <div data-i="strip3">DE · EN · FR · ES</div>
+  <div data-i="strip4">Outlook / Microsoft 365 · Gmail</div>
+</div></div>
+
+<!-- CALCULATOR -->
+<section id="calc">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow" data-i="calc_eyebrow">Rechnung</span>
+      <h2 data-i="calc_h2">Was der Posteingang Ihre Kanzlei wirklich kostet.</h2>
+      <p data-i="calc_p">Stellen Sie die Werte auf Ihre Kanzlei ein. Die Zahl rechts ist der Umsatz, der jedes Jahr in der Postbearbeitung verschwindet.</p>
+    </div>
+    <div class="calc-grid">
+      <div class="inputs">
+        <div class="field">
+          <label for="fLaw"><span data-i="f_law">Berufsträger</span><span class="val" id="vLaw">5</span></label>
+          <input type="range" id="fLaw" min="1" max="40" step="1" value="5">
+        </div>
+        <div class="field">
+          <label for="fHrs"><span data-i="f_hrs">Stunden Postbearbeitung pro Tag</span><span class="val" id="vHrs">1,5</span></label>
+          <input type="range" id="fHrs" min="0.5" max="4" step="0.25" value="1.5">
+        </div>
+        <div class="field">
+          <label for="fRate"><span data-i="f_rate">Stundensatz</span><span class="val" id="vRate">250 €</span></label>
+          <input type="range" id="fRate" min="100" max="600" step="10" value="250">
+        </div>
+        <div class="field">
+          <label for="fAuto"><span data-i="f_auto">Anteil automatisierbar</span><span class="val" id="vAuto">70 %</span></label>
+          <input type="range" id="fAuto" min="30" max="90" step="5" value="70">
+        </div>
+        <div class="field">
+          <label for="fCost"><span data-i="f_cost">Kosten der Lösung pro Monat</span><span class="val" id="vCost">2.000 €</span></label>
+          <input type="range" id="fCost" min="500" max="8000" step="100" value="2000">
+        </div>
+      </div>
+      <div class="results">
+        <div class="res-row"><span data-i="r1">Verlorene Stunden pro Monat</span><b id="rHours">150</b></div>
+        <div class="res-row"><span data-i="r2">Nicht abgerechnet pro Monat</span><b id="rMonth">37.500 €</b></div>
+        <div class="res-row"><span data-i="r3">Zurückgewonnen pro Jahr</span><b id="rBack">315.000 €</b></div>
+        <div class="res-row"><span data-i="r4">Kosten der Lösung pro Jahr</span><b id="rCost">24.000 €</b></div>
+        <div class="res-hero">
+          <div class="lbl" data-i="r5">Netto-Ertrag im ersten Jahr</div>
+          <div class="num" id="rNet">291.000 €</div>
+        </div>
+        <div class="assump" id="rRoi">ROI 13,1× · Amortisation nach 19 Tagen</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW -->
+<section>
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow" data-i="how_eyebrow">Ablauf</span>
+      <h2 data-i="how_h2">Drei Schritte, die jede eingehende E-Mail durchläuft.</h2>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <span class="n">01</span>
+        <h3 data-i="s1h">Erfassen</h3>
+        <p data-i="s1p">Das System hängt sich direkt an Outlook, Microsoft 365 oder Gmail. Keine Migration, keine neue Oberfläche, kein Umlernen für das Sekretariat.</p>
+      </div>
+      <div class="step">
+        <span class="n">02</span>
+        <h3 data-i="s2h">Verstehen</h3>
+        <p data-i="s2p">Sprache, Absendertyp, Anliegen, Dringlichkeit und Fristen werden erkannt — Mandant, Neuanfrage, Gericht, Gegenseite oder Werbung.</p>
+      </div>
+      <div class="step">
+        <span class="n">03</span>
+        <h3 data-i="s3h">Handeln</h3>
+        <p data-i="s3p">Ablage in den richtigen Ordner, Antwortentwurf zur Freigabe, Frist in den Kalender. Freigegeben wird immer von einem Menschen.</p>
+      </div>
+    </div>
+    <div class="caps">
+      <div class="cap"><h3 data-i="c1h">Neuanfragen erkennen</h3><p data-i="c1p">Neue Mandanten erhalten binnen Minuten eine vollständige Erstantwort mit Unterlagenliste — statt nach zwei Tagen bei der Konkurrenz zu sein.</p></div>
+      <div class="cap"><h3 data-i="c2h">Fristen herausziehen</h3><p data-i="c2p">Datumsangaben aus Schriftsätzen und Gerichtspost werden erkannt und als Termin mit Vorfrist angelegt.</p></div>
+      <div class="cap"><h3 data-i="c3h">Absagen mit Stil</h3><p data-i="c3p">Anfragen außerhalb Ihres Fachgebiets bekommen einen höflichen Absageentwurf. Ihr Ruf bleibt, Ihre Zeit auch.</p></div>
+      <div class="cap"><h3 data-i="c4h">Unterlagen nachfassen</h3><p data-i="c4p">Fehlende Dokumente werden automatisch und wiederholt angemahnt, bis sie da sind — ohne dass jemand daran denken muss.</p></div>
+      <div class="cap"><h3 data-i="c5h">Vier Sprachen</h3><p data-i="c5p">Deutsch, Englisch, Französisch, Spanisch. Geantwortet wird in der Sprache des Absenders, im Ton Ihrer Kanzlei.</p></div>
+      <div class="cap"><h3 data-i="c6h">Tagesübersicht</h3><p data-i="c6p">Ein Aufschlag um 8:00 Uhr: was heute entschieden werden muss, was wartet, was erledigt ist.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- DEMO -->
+<section id="demo">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow" data-i="demo_eyebrow">Live</span>
+      <h2 data-i="demo_h2">Fügen Sie eine echte E-Mail ein. Sehen Sie, was passiert.</h2>
+      <p data-i="demo_p">Kein Video, keine Folien. Text einfügen oder ein Beispiel wählen — das System antwortet in derselben Sprache.</p>
+    </div>
+    <div class="demo-grid">
+      <div class="pane">
+        <div class="pane-head">
+          <span data-i="pane_in">Posteingang</span>
+          <div class="samples">
+            <button data-s="0" data-i="samp1">Neuanfrage</button>
+            <button data-s="1" data-i="samp2">Frist</button>
+            <button data-s="2" data-i="samp3">Werbung</button>
+            <button data-s="3" data-i="samp4">Englisch</button>
+          </div>
+        </div>
+        <textarea id="mail" spellcheck="false"></textarea>
+        <div class="run">
+          <button class="btn" id="go" data-i="run">Sortieren &amp; beantworten</button>
+          <span class="hint" id="hint"></span>
+        </div>
+      </div>
+      <div class="pane">
+        <div class="pane-head"><span data-i="pane_out">Ergebnis</span><span id="ts"></span></div>
+        <div class="out" id="out">
+          <div class="placeholder" data-i="ph">Warte auf E-Mail …</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRUST -->
+<section>
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow" data-i="trust_eyebrow">Vertraulichkeit</span>
+      <h2 data-i="trust_h2">Mandantendaten verlassen Deutschland nicht.</h2>
+    </div>
+    <div class="trust">
+      <div><h3 data-i="t1h">Eigene Instanz</h3><p data-i="t1p">Die gesamte Verarbeitung läuft auf einer dedizierten Instanz in einem deutschen Rechenzentrum. Keine gemeinsame Nutzung mit anderen Kanzleien.</p></div>
+      <div><h3 data-i="t2h">Kein Training</h3><p data-i="t2p">Ihre Korrespondenz wird nicht zum Training von Modellen verwendet. Auftragsverarbeitungsvertrag nach Art. 28 DSGVO liegt bei.</p></div>
+      <div><h3 data-i="t3h">Mensch entscheidet</h3><p data-i="t3p">Nichts wird ohne Freigabe versendet. Jeder Entwurf, jede Ablage, jede Frist bleibt in Ihrer Hand — protokolliert und nachvollziehbar.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- CLOSE -->
+<section id="close">
+  <div class="wrap close-grid">
+    <div>
+      <span class="eyebrow" data-i="close_eyebrow">Nächster Schritt</span>
+      <h2 data-i="close_h2">Zwei Wochen Pilot. Ihr echter Posteingang.</h2>
+      <p style="color:var(--graphite);margin-top:18px" data-i="close_p">Wir spiegeln zwei Wochen Ihrer Korrespondenz, zeigen Ihnen die Sortierung und die Antwortentwürfe — und Sie entscheiden danach, ob es live geht.</p>
+      <a class="btn" href="mailto:legal@ai-process.net?subject=Pilot%20Anfrage" data-i="close_cta">Pilot anfragen</a>
+    </div>
+    <ul class="close-list">
+      <li><b>01</b><span data-i="cl1">Erstgespräch, 30 Minuten</span></li>
+      <li><b>02</b><span data-i="cl2">Anbindung an Outlook oder Gmail, ein Tag</span></li>
+      <li><b>03</b><span data-i="cl3">Pilotbetrieb parallel, zwei Wochen</span></li>
+      <li><b>04</b><span data-i="cl4">Auswertung: gesparte Stunden, schwarz auf weiß</span></li>
+    </ul>
+  </div>
+  <div class="wrap"><footer>
+    <span>AI-Process · Legal</span>
+    <span data-i="foot">Gehostet in Deutschland · legal@ai-process.net</span>
+  </footer></div>
+</section>
+
+<script>
+/* ---------------- i18n ---------------- */
+const T = {
+ en:{
+  nav_cta:"Book a demo",
+  hero_eyebrow:"For law firms & in-house counsel",
+  hero_h1a:"Your firm's most expensive employee is",
+  hero_h1b:"the inbox",
+  hero_lead:"Every hour a lawyer spends sorting, assigning and filing email is an hour nobody bills. Our system reads, sorts, prioritises and answers the inbox — in German, English, French and Spanish. GDPR-compliant, hosted in Germany.",
+  hero_cta1:"Try the live demo", hero_cta2:"Calculate the cost",
+  tick_lbl:"Unbilled — per year",
+  tick_sub:"Firm of 5 fee earners, 1.5 hrs of mail handling per day, €250/hr, 20 working days a month.",
+  strip1:"Hosted in Germany", strip2:"GDPR & privilege", strip3:"DE · EN · FR · ES", strip4:"Outlook / Microsoft 365 · Gmail",
+  calc_eyebrow:"The arithmetic",
+  calc_h2:"What the inbox actually costs your firm.",
+  calc_p:"Set the sliders to your practice. The figure on the right is the revenue that disappears into mail handling every year.",
+  f_law:"Fee earners", f_hrs:"Hours on mail per day", f_rate:"Hourly rate", f_auto:"Share automatable", f_cost:"Cost of the solution per month",
+  r1:"Hours lost per month", r2:"Unbilled per month", r3:"Recovered per year", r4:"Cost of solution per year", r5:"Net gain in year one",
+  how_eyebrow:"How it runs",
+  how_h2:"Three steps every incoming email goes through.",
+  s1h:"Capture", s1p:"Connects straight to Outlook, Microsoft 365 or Gmail. No migration, no new interface, nothing for the office to relearn.",
+  s2h:"Understand", s2p:"Language, sender type, matter, urgency and deadlines are identified — client, new enquiry, court, opposing counsel or marketing.",
+  s3h:"Act", s3p:"Filed in the right folder, reply drafted for approval, deadline in the calendar. A human always signs off.",
+  c1h:"Catch new enquiries", c1p:"New clients get a complete first reply with a document list within minutes — instead of reaching a competitor two days later.",
+  c2h:"Pull out deadlines", c2p:"Dates in pleadings and court mail are extracted and entered as diary entries with a reminder in advance.",
+  c3h:"Decline with grace", c3p:"Enquiries outside your practice areas get a polite declining draft. Your reputation stays intact, so does your time.",
+  c4h:"Chase documents", c4p:"Missing paperwork is chased automatically and repeatedly until it arrives — nobody has to remember.",
+  c5h:"Four languages", c5p:"German, English, French, Spanish. Replies come back in the sender's language, in your firm's tone.",
+  c6h:"Daily brief", c6p:"One page at 8:00: what needs deciding today, what is waiting, what is done.",
+  demo_eyebrow:"Live",
+  demo_h2:"Paste in a real email. Watch what happens.",
+  demo_p:"No video, no slides. Paste text or pick an example — the system answers in the same language.",
+  pane_in:"Inbox", pane_out:"Result", run:"Sort & reply", ph:"Waiting for an email …",
+  samp1:"New enquiry", samp2:"Deadline", samp3:"Marketing", samp4:"English",
+  trust_eyebrow:"Confidentiality",
+  trust_h2:"Client data never leaves Germany.",
+  t1h:"Your own instance", t1p:"All processing runs on a dedicated instance in a German data centre. Never shared with another firm.",
+  t2h:"No training", t2p:"Your correspondence is not used to train models. A GDPR Art. 28 processing agreement is included.",
+  t3h:"Humans decide", t3p:"Nothing is sent without approval. Every draft, filing and deadline stays in your hands — logged and auditable.",
+  close_eyebrow:"Next step",
+  close_h2:"A two-week pilot. On your real inbox.",
+  close_p:"We mirror two weeks of your correspondence, show you the sorting and the draft replies — and you decide afterwards whether it goes live.",
+  close_cta:"Request the pilot",
+  cl1:"Intro call, 30 minutes", cl2:"Connect Outlook or Gmail, one day", cl3:"Pilot running in parallel, two weeks", cl4:"Review: hours saved, in black and white",
+  foot:"Hosted in Germany · legal@ai-process.net"
+ }
+};
+const DE = {};
+document.querySelectorAll("[data-i]").forEach(el=>DE[el.dataset.i]=el.innerHTML);
+
+const SAMPLES = {
+ de:[
+`Von: markus.brandt@gmx.de
+Betreff: Fristlose Kündigung – dringende Bitte um Beratung
+
+Sehr geehrte Damen und Herren,
+
+ich wurde gestern von meinem Arbeitgeber fristlos gekündigt, nach elf Jahren im Betrieb und ohne vorherige Abmahnung. Das Kündigungsschreiben ging mir am 11.08.2026 zu.
+
+Ich würde Sie gerne mit der Vertretung beauftragen. Können Sie mir mitteilen, welche Unterlagen Sie benötigen und mit welchen Kosten ich rechnen muss?
+
+Mit freundlichen Grüßen
+Markus Brandt
+0171 2233445`,
+`Von: poststelle@ag-muenchen.bayern.de
+Betreff: Az. 24 C 1187/26 – Verfügung
+
+Sehr geehrte Kollegin,
+
+in dem Rechtsstreit Bauer ./. Hoffmann GmbH wird Ihnen der Schriftsatz der Gegenseite vom 06.08.2026 zur Stellungnahme übersandt.
+
+Es wird Gelegenheit zur Stellungnahme binnen zwei Wochen ab Zustellung gegeben. Die Zustellung erfolgte am 11.08.2026.
+
+Mit freundlichen Grüßen
+Amtsgericht München`,
+`Von: growth@leadrocket-agentur.de
+Betreff: 30 neue Mandanten pro Monat für Ihre Kanzlei
+
+Hallo,
+
+ich habe gesehen, dass Ihre Kanzlei bei Google nur auf Seite 3 rankt. Wir haben bereits 140 Kanzleien geholfen, ihre Mandantenanfragen zu verdreifachen.
+
+Hätten Sie diese Woche 15 Minuten für ein unverbindliches Gespräch? Ich schicke Ihnen gerne unsere Fallstudien.
+
+Beste Grüße
+Tim Keller`,
+`From: j.okafor@northgate-trading.co.uk
+Subject: German counsel required – distribution agreement
+
+Dear Sirs,
+
+We are a UK-based distributor preparing to appoint a partner in Bavaria and require German counsel to review and adapt our standard distribution agreement, in particular the termination and compensation provisions under German commercial agency law.
+
+Could you confirm whether you act in this area, your hourly rates, and your availability over the next three weeks?
+
+Kind regards,
+Joseph Okafor
+Head of Legal, Northgate Trading Ltd.`]
+};
+
+let lang="de";
+function setLang(l){
+  lang=l;
+  document.documentElement.lang=l;
+  const dict = l==="de"?DE:T.en;
+  document.querySelectorAll("[data-i]").forEach(el=>{ if(dict[el.dataset.i]) el.innerHTML=dict[el.dataset.i]; });
+  document.querySelectorAll(".lang button").forEach(b=>b.setAttribute("aria-pressed", b.dataset.lang===l));
+  document.getElementById("mail").placeholder = l==="de"
+    ? "E-Mail hier einfügen …" : "Paste an email here …";
+  calc();
+}
+document.querySelectorAll(".lang button").forEach(b=>b.onclick=()=>setLang(b.dataset.lang));
+
+/* ---------------- calculator ---------------- */
+const $=id=>document.getElementById(id);
+const eur=n=>new Intl.NumberFormat(lang==="de"?"de-DE":"en-GB",{style:"currency",currency:"EUR",maximumFractionDigits:0}).format(n);
+const num=n=>new Intl.NumberFormat(lang==="de"?"de-DE":"en-GB",{maximumFractionDigits:1}).format(n);
+
+function calc(){
+  const law=+$("fLaw").value, hrs=+$("fHrs").value, rate=+$("fRate").value,
+        auto=+$("fAuto").value/100, cost=+$("fCost").value;
+  const days=20;
+  const hoursMonth = law*hrs*days;
+  const lostMonth  = hoursMonth*rate;
+  const backYear   = lostMonth*auto*12;
+  const costYear   = cost*12;
+  const net        = backYear-costYear;
+  const roi        = backYear/costYear;
+  const payback    = Math.max(1, Math.round(costYear/(backYear/365)));
+
+  $("vLaw").textContent=law;
+  $("vHrs").textContent=num(hrs);
+  $("vRate").textContent=eur(rate);
+  $("vAuto").textContent=Math.round(auto*100)+" %";
+  $("vCost").textContent=eur(cost);
+
+  $("rHours").textContent=num(hoursMonth);
+  $("rMonth").textContent=eur(lostMonth);
+  $("rBack").textContent=eur(backYear);
+  $("rCost").textContent=eur(costYear);
+  $("rNet").textContent=eur(net);
+  $("heroNum").textContent=eur(lostMonth*12);
+  $("rRoi").textContent = lang==="de"
+    ? `ROI ${num(roi)}× · Amortisation nach ${payback} Tagen`
+    : `ROI ${num(roi)}× · pays for itself in ${payback} days`;
+}
+["fLaw","fHrs","fRate","fAuto","fCost"].forEach(id=>$(id).addEventListener("input",calc));
+
+/* ---------------- live demo ---------------- */
+document.querySelectorAll(".samples button").forEach(b=>{
+  b.onclick=()=>{ $("mail").value = SAMPLES.de[+b.dataset.s]; };
+});
+$("mail").value = SAMPLES.de[0];
+
+/* triage runs server-side in n8n (self-hosted, Germany) — no key in the browser */
+
+$("go").onclick = async ()=>{
+  const body=$("mail").value.trim();
+  const out=$("out"), go=$("go"), hint=$("hint");
+  if(!body){ out.innerHTML=`<div class="placeholder">${lang==="de"?"Bitte zuerst eine E-Mail einfügen.":"Paste an email first."}</div>`; return; }
+  go.disabled=true;
+  hint.textContent = lang==="de"?"Wird gelesen …":"Reading …";
+  out.innerHTML=`<div class="placeholder">${lang==="de"?"Analysiere Absender, Anliegen, Frist …":"Analysing sender, matter, deadline …"}</div>`;
+  try{
+    const r = await fetch("https://n8n.ai-process.net/webhook/legal-demo",{
+      method:"POST",
+      headers:{"Content-Type":"text/plain"},
+      body:JSON.stringify({email:body})
+    });
+    const d = await r.json();
+    if(d.error) throw new Error(d.error);
+
+    const L = lang==="de"
+      ? {lang:"Sprache",folder:"Ablage",dead:"Frist",sum:"Anliegen",act:"Nächster Schritt",draft:"Antwortentwurf — zur Freigabe",none:"Kein Entwurf — als Werbung eingestuft, keine Antwort nötig.",no:"keine"}
+      : {lang:"Language",folder:"Filed in",dead:"Deadline",sum:"Matter",act:"Next step",draft:"Draft reply — for approval",none:"No draft — classified as marketing, no reply needed.",no:"none"};
+
+    const hot = (d.priority||"").toLowerCase().startsWith("h");
+    const low = (d.priority||"").toLowerCase().startsWith("n");
+    out.innerHTML = `
+      <div class="stamp">
+        <div class="stamp-top">
+          <span class="tag hot" style="${hot?"":"background:none;border-color:#3a3836;color:#c9c6c1"}">${d.category||""}</span>
+          <span class="tag ${hot?"hot":(low?"cool":"")}">${(lang==="de"?"Priorität ":"Priority ")+(d.priority||"")}</span>
+        </div>
+        <dl class="kv">
+          <dt>${L.lang}</dt><dd>${d.language||""}</dd>
+          <dt>${L.folder}</dt><dd>${d.folder||""}</dd>
+          <dt>${L.dead}</dt><dd>${d.deadline||L.no}</dd>
+          <dt>${L.sum}</dt><dd>${d.summary||""}</dd>
+          <dt>${L.act}</dt><dd>${d.action||""}</dd>
+        </dl>
+      </div>
+      <div class="draft">
+        <h4>${L.draft}</h4>
+        ${d.reply?`<pre>${d.reply.replace(/</g,"&lt;")}</pre>`:`<div class="placeholder">${L.none}</div>`}
+      </div>`;
+    $("ts").textContent=new Date().toLocaleTimeString(lang==="de"?"de-DE":"en-GB");
+    hint.textContent="";
+  }catch(e){
+    out.innerHTML=`<div class="err">${lang==="de"?"Analyse fehlgeschlagen. Bitte erneut senden.":"Analysis failed. Send it again."}<br>${String(e).slice(0,120)}</div>`;
+    hint.textContent="";
+  }
+  go.disabled=false;
+};
+
+setLang("de");
+</script>
+</body>
+</html>
