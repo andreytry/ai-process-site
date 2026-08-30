@@ -63,6 +63,9 @@ h1 em{font-style:normal;color:var(--accent)}
 .chip{font-size:12px;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:4px 10px}
 .go{margin-top:auto;display:inline-flex;align-items:center;gap:8px;font-weight:600;color:var(--ink);font-size:15px}
 .go .arw{transition:transform .18s ease}
+a.go{text-decoration:none}
+a.go:hover .arw{transform:translateX(4px)}
+.go2{margin-top:2px}
 .card:hover .go .arw{transform:translateX(4px)}
 footer{border-top:1px solid var(--line);padding:26px 0 40px;color:var(--dim);font-size:13px;
   display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between}
@@ -93,13 +96,14 @@ footer a:hover{color:var(--ink)}
       <span class="go">Talk to the agent <span class="arw">→</span></span>
     </a>
 
-    <a class="card" href="/portfolio/casas/">
+    <div class="card">
       <div class="kicker"><span class="tag">Hotels</span><span class="badge">Live</span></div>
       <h3>Direct-Booking Concierge</h3>
       <p>A WhatsApp &amp; voice concierge that answers guest questions instantly and drives direct bookings — keeping the OTA commission in the hotel's pocket.</p>
       <div class="chips"><span class="chip">WhatsApp</span><span class="chip">Multilingual</span><span class="chip">Direct booking</span></div>
-      <span class="go">Open demo <span class="arw">→</span></span>
-    </a>
+      <a class="go" href="/portfolio/casas/">Casas Collection · Miami <span class="arw">→</span></a>
+      <a class="go go2" href="/portfolio/marena/">Marena · Santo Domingo <span class="arw">→</span></a>
+    </div>
 
     <a class="card" href="https://cpa.ai-process.net/">
       <div class="kicker"><span class="tag">CPAs</span><span class="badge">Live</span></div>
