@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>The Casas Collection · Downtown Miami</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+  :root{
+    --ink:#0a1626; --ink2:#0f2036; --paper:#f4efe6; --paper2:#ece4d6;
+    --brass:#c2a15c; --brass-lt:#e3cf9e; --sand:#b9ac93; --line:rgba(255,255,255,.14);
+    --line-dk:rgba(10,22,38,.14); --muted:#6f7789;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--paper);color:var(--ink);font-family:"Inter",system-ui,sans-serif;line-height:1.6;-webkit-font-smoothing:antialiased}
+  .serif{font-family:"Cormorant Garamond",Georgia,serif}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 32px}
+  @media(max-width:640px){.wrap{padding:0 20px}}
+  .eyebrow{font-size:11px;letter-spacing:.34em;text-transform:uppercase;font-weight:500}
+  .rule{height:1px;background:var(--line-dk);border:0}
+
+  /* NAV */
+  nav{position:fixed;inset:0 0 auto 0;z-index:50;transition:background .4s,border-color .4s;border-bottom:1px solid transparent}
+  nav.solid{background:rgba(10,22,38,.9);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  nav .wrap{display:flex;align-items:center;justify-content:space-between;height:72px}
+  .word{color:#fff;font-size:14px;letter-spacing:.32em;font-weight:400;text-transform:uppercase}
+  .word b{font-weight:600;color:var(--brass-lt)}
+  .navr{display:flex;align-items:center;gap:30px}
+  .navr a{color:rgba(255,255,255,.82);font-size:12.5px;letter-spacing:.14em;text-transform:uppercase}
+  .navr a:hover{color:#fff}
+  .navr a.book{color:var(--ink);background:var(--brass-lt);padding:10px 18px;letter-spacing:.12em;border-radius:1px;font-weight:500}
+  .navr a.checkin{color:#fff;border:1px solid rgba(255,255,255,.5);padding:9px 15px;letter-spacing:.12em;border-radius:1px;font-weight:500}
+  .navr a.checkin:hover{border-color:var(--brass-lt);color:var(--brass-lt)}
+  @media(max-width:640px){
+    nav .wrap{height:58px}
+    .word{font-size:11px;letter-spacing:.14em}
+    .navr{gap:9px}
+    .navr a:not(.book):not(.checkin){display:none}
+    .navr a.checkin{padding:8px 11px;font-size:10.5px;letter-spacing:.06em}
+    .navr a.book{padding:8px 11px;font-size:10.5px;letter-spacing:.06em}
+  }
+
+  /* HERO */
+  .hero{position:relative;min-height:100vh;display:flex;align-items:flex-end;color:#fff;overflow:hidden}
+  .hero img.bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0}
+  .hero .veil{position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,rgba(8,18,32,.82) 0%,rgba(8,18,32,.5) 42%,rgba(6,13,24,.96) 100%)}
+  .hero .frame{position:absolute;inset:22px;z-index:2;border:1px solid rgba(255,255,255,.28);pointer-events:none}
+  .hero .wrap{position:relative;z-index:3;padding-top:120px;padding-bottom:66px;width:100%}
+  .hero .eyebrow{color:var(--brass-lt);margin-bottom:26px;text-shadow:0 1px 12px rgba(0,0,0,.6)}
+  .hero h1{font-weight:600;font-size:clamp(60px,10.5vw,124px);line-height:.94;letter-spacing:-.015em;text-shadow:0 3px 40px rgba(0,0,0,.9),0 2px 8px rgba(0,0,0,.65)}
+  .hero h1 em{font-style:italic;color:var(--brass-lt)}
+  .hero p{margin-top:24px;max-width:44ch;font-size:21px;font-weight:500;color:#fff;text-shadow:0 2px 20px rgba(0,0,0,.92),0 1px 3px rgba(0,0,0,.7)}
+  .hero .acts{margin-top:34px;display:flex;gap:26px;align-items:center;flex-wrap:wrap}
+  .btn{font-size:12.5px;letter-spacing:.16em;text-transform:uppercase;font-weight:500;padding:15px 26px;border-radius:1px;transition:.25s}
+  .btn-solid{background:var(--brass-lt);color:var(--ink)}
+  .btn-solid:hover{background:#fff}
+  .hero .acts .stack{display:flex;flex-direction:column;gap:10px}
+  .btn-checkin{background:transparent;border:1px solid rgba(255,255,255,.55);color:#fff;text-align:center}
+  .btn-checkin:hover{border-color:var(--brass-lt);color:var(--brass-lt)}
+  .btn-line{color:#fff;border-bottom:1px solid rgba(255,255,255,.4);padding:6px 2px}
+  .btn-line:hover{border-color:var(--brass-lt);color:var(--brass-lt)}
+  .scrollcue{position:absolute;left:50%;bottom:26px;transform:translateX(-50%);z-index:3;color:rgba(255,255,255,.6);font-size:10px;letter-spacing:.3em;text-transform:uppercase;writing-mode:vertical-rl}
+
+  /* SECTION SHELL */
+  section{position:relative}
+  .lede{padding:120px 0 40px}
+  .lede .eyebrow{color:var(--brass);margin-bottom:20px}
+  .lede h2{font-weight:300;font-size:clamp(30px,4.4vw,52px);line-height:1.06;max-width:20ch;letter-spacing:-.005em}
+  .lede p.k{margin-top:20px;max-width:56ch;color:#45506380;color:var(--muted);font-size:16px}
+
+  /* COLLECTION */
+  .collection{padding-bottom:120px}
+  .grid{display:grid;grid-template-columns:repeat(6,1fr);gap:2px;margin-top:36px}
+  .est{grid-column:span 6;border-top:1px solid var(--line-dk);padding-top:14px;display:flex;justify-content:space-between;align-items:baseline;margin-bottom:26px}
+  .est .lbl{font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--muted)}
+  .est .val{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--brass)}
+  .casa{grid-column:span 2;position:relative;display:block;background:var(--ink);overflow:hidden;aspect-ratio:3/4}
+  .casa:nth-child(2){grid-column:span 4}
+  .casa:nth-child(5){grid-column:span 3}
+  .casa:nth-child(6){grid-column:span 3}
+  @media(max-width:820px){.casa,.casa:nth-child(n){grid-column:span 3}}
+  @media(max-width:520px){.casa,.casa:nth-child(n){grid-column:span 6;aspect-ratio:4/3}}
+  .casa img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .9s cubic-bezier(.2,.7,.2,1);filter:saturate(1.02)}
+  .casa:hover img{transform:scale(1.05)}
+  .casa .grad{position:absolute;inset:0;background:linear-gradient(transparent 40%,rgba(6,14,24,.82));z-index:1}
+  .casa .cap{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:22px 22px 20px;color:#fff}
+  .casa .nm{font-family:"Cormorant Garamond",serif;font-weight:500;font-size:28px;line-height:1}
+  .casa .sub{font-size:12px;letter-spacing:.03em;color:rgba(255,255,255,.72);margin-top:7px}
+  .casa .rate{position:absolute;top:16px;right:18px;z-index:2;color:var(--brass-lt);font-size:12px;letter-spacing:.12em}
+  .casa .view{margin-top:12px;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--brass-lt);opacity:0;transform:translateY(6px);transition:.3s}
+  .casa:hover .view{opacity:1;transform:none}
+
+  /* DIRECT */
+  .direct{background:var(--ink);color:#fff;padding:130px 0}
+  .direct .eyebrow{color:var(--brass-lt)}
+  .direct h2{font-weight:300;font-size:clamp(30px,4.6vw,58px);line-height:1.04;margin-top:22px;max-width:16ch}
+  .direct h2 em{font-style:italic;color:var(--brass-lt)}
+  .ledger{margin-top:56px;display:grid;grid-template-columns:repeat(3,1fr);gap:0}
+  @media(max-width:720px){.ledger{grid-template-columns:1fr;gap:0}}
+  .ledger .c{padding:30px 34px;border-left:1px solid var(--line)}
+  .ledger .c:first-child{border-left:0;padding-left:0}
+  .ledger .fig{font-family:"Cormorant Garamond",serif;font-size:52px;font-weight:300;line-height:1}
+  .ledger .c.keep .fig{color:var(--brass-lt)}
+  .ledger .c.lost .fig{color:#c98b7d}
+  .ledger .cap{margin-top:14px;font-size:13.5px;color:rgba(255,255,255,.68);max-width:26ch}
+  .direct .note{margin-top:40px;font-size:14px;color:rgba(255,255,255,.6);max-width:60ch}
+
+  /* RESIDENCE */
+  .res{padding:120px 0;background:var(--paper2)}
+  .res .top{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:end}
+  @media(max-width:800px){.res .top{grid-template-columns:1fr;gap:24px}}
+  .res h2{font-weight:300;font-size:clamp(28px,4vw,46px);line-height:1.05;max-width:14ch}
+  .res .addr{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--brass);margin-top:16px}
+  .res p.d{color:#42506a;color:var(--muted);font-size:16px}
+  .amen{margin-top:52px;display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-top:1px solid var(--line-dk)}
+  @media(max-width:700px){.amen{grid-template-columns:1fr}}
+  .amen .a{padding:24px 26px 24px 0;border-bottom:1px solid var(--line-dk);border-right:1px solid var(--line-dk)}
+  .amen .a:nth-child(3n){border-right:0}
+  @media(max-width:700px){.amen .a{border-right:0}}
+  .amen .a .t{font-family:"Cormorant Garamond",serif;font-size:22px;font-weight:500}
+  .amen .a .s{font-size:13px;color:var(--muted);margin-top:4px}
+
+  /* LOCATION */
+  .loc{padding:120px 0}
+  .loc .row{display:flex;justify-content:space-between;align-items:baseline;padding:20px 0;border-bottom:1px solid var(--line-dk)}
+  .loc .row:first-of-type{border-top:1px solid var(--line-dk)}
+  .loc .row .p{font-family:"Cormorant Garamond",serif;font-size:26px;font-weight:400}
+  .loc .row .m{font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--brass)}
+
+  /* CONTACT */
+  .cta-sec{background:var(--ink);color:#fff;padding:120px 0;text-align:center}
+  .cta-sec .eyebrow{color:var(--brass-lt)}
+  .cta-sec h2{font-weight:300;font-size:clamp(30px,4.6vw,56px);margin:20px 0 18px}
+  .cta-sec p{max-width:48ch;margin:0 auto;color:rgba(255,255,255,.74);font-size:16px}
+  .cta-sec .hint{margin-top:30px;font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--brass-lt)}
+
+  footer{background:#07111e;color:rgba(255,255,255,.5);font-size:12px;letter-spacing:.04em}
+  footer .wrap{padding:34px 32px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
+  footer .word{font-size:12px}
+  footer .fnav{display:flex;gap:22px;flex-wrap:wrap}
+  footer .fnav a{color:rgba(255,255,255,.55);letter-spacing:.14em;text-transform:uppercase;font-size:11px}
+  footer .fnav a:hover{color:#fff}
+  footer .fmeta{font-size:11.5px;color:rgba(255,255,255,.45)}
+
+  .langswitch{display:flex;gap:2px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.32);border-radius:2px;padding:3px}
+  .langswitch button{background:none;border:0;color:rgba(255,255,255,.65);padding:6px 10px;cursor:pointer;font-family:inherit;font-size:11px;letter-spacing:.16em;border-radius:1px;transition:.2s}
+  .langswitch button.on{background:var(--brass-lt);color:var(--ink);font-weight:600}
+  @media(max-width:640px){.langswitch button{padding:5px 9px}}
+</style>
+</head>
+<body>
+
+<nav id="nav"><div class="wrap">
+  <div class="word">THE CASAS <b>COLLECTION</b></div>
+  <div class="navr">
+    <a data-i18n="nav_apts" href="#collection">The Apartments</a>
+    <a data-i18n="nav_res" href="#residence">The Residence</a>
+    <div class="langswitch" aria-label="Language">
+      <button type="button" data-lang="en">EN</button>
+      <button type="button" data-lang="es">ES</button>
+    </div>
+  </div>
+</div></nav>
+
+<header class="hero">
+  <img class="bg" src="https://bookingenginecdn.hostaway.com/listing/193328-512008-724abZvBeJGxbsteSeBKvWcQYqTjc6tm7puzOKNl5rU-69e92a1745d5c?width=1800&quality=78&format=webp" alt="Casa Marina, Downtown Miami" onerror="this.style.display='none'"/>
+  <div class="veil"></div>
+  <div class="frame"></div>
+  <div class="wrap">
+    <div class="eyebrow">Downtown Miami · 230 NE 4th Street</div>
+    <h1 data-i18n="hero_h1" class="serif">Stay above<br/>the <em>skyline.</em></h1>
+    <p data-i18n="hero_p">Five private apartments in a Downtown high-rise — rooftop pool, bay views, skyline living. Booked directly with us, never through a middleman.</p>
+    <div class="acts">
+      <div class="stack">
+        <a data-i18n="hero_book" class="btn btn-solid" href="https://thecasascollection.holidayfuture.com/all-listings" target="_blank" rel="noopener">Book Direct</a>
+        <a data-i18n="hero_checkin" class="btn btn-checkin" href="checkin.html">Check in</a>
+      </div>
+      <a data-i18n="hero_view" class="btn btn-line" href="#collection">View the apartments</a>
+    </div>
+  </div>
+  <div data-i18n="scrollcue" class="scrollcue">Scroll</div>
+</header>
+
+<section class="collection" id="collection">
+  <div class="wrap">
+    <div class="lede">
+      <div data-i18n="col_eb" class="eyebrow">The Collection</div>
+      <h2 data-i18n="col_h2" class="serif">Five apartments, each with its own character.</h2>
+      <p data-i18n="col_k" class="k">One bedroom, up to three guests, floor-to-ceiling glass and skyline views — rated 4.8 to 4.95 by recent guests. Every stay includes the building's rooftop pool, fitness studio and lounges.</p>
+    </div>
+    <div class="grid">
+      <div class="est">
+        <span class="lbl">The Casas Collection</span>
+        <span data-i18n="est_val" class="val">Downtown Miami · Five residences</span>
+      </div>
+      <a class="casa" href="https://thecasascollection.holidayfuture.com/listings/512006" target="_blank" rel="noopener">
+        <img src="https://bookingenginecdn.hostaway.com/listing/193328-512006-awPPT7RpByKNDG0bu8xB--ftkg4dWW7Vti--fzg2a2cig-69e92a4897573?width=900&quality=76&format=webp" alt="Casa Soléa" onerror="this.style.opacity=0"/>
+        <div class="grad"></div><div class="rate serif">4.95 ★</div>
+        <div class="cap"><div class="nm">Casa Soléa</div><div data-i18n="sub1" class="sub">Luxe Miami escape · Brickell skyline</div><div data-i18n="view_res" class="view">View residence</div></div>
+      </a>
+      <a class="casa" href="https://thecasascollection.holidayfuture.com/listings/512007" target="_blank" rel="noopener">
+        <img src="https://bookingenginecdn.hostaway.com/listing/193328-512007-h63V3G--VT2ZZ--ztjLt47bYhpfsl2H4vFkncLh5FYDPs-69e9316e66b28?width=1400&quality=76&format=webp" alt="Casa Athena" onerror="this.style.opacity=0"/>
+        <div class="grad"></div><div class="rate serif">4.90 ★</div>
+        <div class="cap"><div class="nm">Casa Athena</div><div data-i18n="sub2" class="sub">Elevated escape · pool &amp; gym · skyline views</div><div data-i18n="view_res" class="view">View residence</div></div>
+      </a>
+      <a class="casa" href="https://thecasascollection.holidayfuture.com/listings/512014" target="_blank" rel="noopener">
+        <img src="https://bookingenginecdn.hostaway.com/listing/193328-512014-8jpneyhhqCcogbO1VHELQdx6wRYr66ftcExzq2FhjbE-6a2333a916252?width=900&quality=76&format=webp" alt="Casa Luna" onerror="this.style.opacity=0"/>
+        <div class="grad"></div><div class="rate serif">4.85 ★</div>
+        <div class="cap"><div class="nm">Casa Luna</div><div data-i18n="sub3" class="sub">High-rise · hot tub · skyline views</div><div data-i18n="view_res" class="view">View residence</div></div>
+      </a>
+      <a class="casa" href="https://thecasascollection.holidayfuture.com/listings/512008" target="_blank" rel="noopener">
+        <img src="https://bookingenginecdn.hostaway.com/listing/193328-512008-724abZvBeJGxbsteSeBKvWcQYqTjc6tm7puzOKNl5rU-69e92a1745d5c?width=1400&quality=76&format=webp" alt="Casa Marina" onerror="this.style.opacity=0"/>
+        <div class="grad"></div><div class="rate serif">4.80 ★</div>
+        <div class="cap"><div class="nm">Casa Marina</div><div data-i18n="sub4" class="sub">23rd floor · bay &amp; skyline views · heated pool</div><div data-i18n="view_res" class="view">View residence</div></div>
+      </a>
+      <a class="casa" href="https://thecasascollection.holidayfuture.com/listings/561505" target="_blank" rel="noopener">
+        <img src="https://bookingenginecdn.hostaway.com/listing/193328-561505-JAN7vkQZ-k6ciQirDChikB2SjQt5BQ0e3bpQ19TMsWM-6a34882f7b01d?width=1400&quality=76&format=webp" alt="Casa Aurora" onerror="this.style.opacity=0"/>
+        <div class="grad"></div><div data-i18n="rate_new" class="rate serif">New</div>
+        <div class="cap"><div class="nm">Casa Aurora</div><div data-i18n="sub5" class="sub">High-rise · pool &amp; gym · skyline views</div><div data-i18n="view_res" class="view">View residence</div></div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="direct">
+  <div class="wrap">
+    <div data-i18n="dir_eb" class="eyebrow">Book Direct</div>
+    <h2 data-i18n="dir_h2" class="serif">The same apartment, without the <em>middleman's cut.</em></h2>
+    <div class="ledger">
+      <div class="c keep"><div data-i18n="d_best" class="fig serif">Best rate</div><div data-i18n="d_best_c" class="cap">Reserve with us for our lowest available price — guaranteed.</div></div>
+      <div class="c"><div data-i18n="d_nofee" class="fig serif">No fees</div><div data-i18n="d_nofee_c" class="cap">Nothing added at checkout. No platform commission, ever.</div></div>
+      <div class="c keep"><div data-i18n="d_ret" class="fig serif">Every return</div><div data-i18n="d_ret_c" class="cap">A returning-guest rate on every stay that follows.</div></div>
+    </div>
+    <p data-i18n="d_note" class="note">Reserve directly with us for our best, unbeatable rate — a better price for you, kept between us.</p>
+  </div>
+</section>
+
+<section class="res" id="residence">
+  <div class="wrap">
+    <div class="top">
+      <div>
+        <div data-i18n="res_eb" class="eyebrow" style="color:var(--brass)">The Residence</div>
+        <h2 data-i18n="res_h2" class="serif" style="margin-top:18px">Alea, a tower built for the way you live now.</h2>
+        <div class="addr">230 NE 4th Street · Downtown Miami</div>
+      </div>
+      <p data-i18n="res_d" class="d">A 2018 high-rise in the heart of the Central Business District, with hotel-grade hospitality and amenities across its rooftop and ground floor — steps from Bayside Marketplace and the bay.</p>
+    </div>
+    <div class="amen">
+      <div class="a"><div data-i18n="am1t" class="t">Rooftop pool &amp; sundeck</div><div data-i18n="am1s" class="s">Resort-style, with a turfed lawn</div></div>
+      <div class="a"><div data-i18n="am2t" class="t">Fitness studio</div><div data-i18n="am2s" class="s">Spin room and outdoor yoga</div></div>
+      <div class="a"><div data-i18n="am3t" class="t">Coworking lounge</div><div data-i18n="am3s" class="s">Private offices and shared desks</div></div>
+      <div class="a"><div data-i18n="am4t" class="t">Lobby café &amp; bar</div><div data-i18n="am4s" class="s">Coffee by day, cocktails by night</div></div>
+      <div class="a"><div data-i18n="am5t" class="t">Controlled access</div><div data-i18n="am5s" class="s">Secure, key-fob entry</div></div>
+      <div class="a"><div data-i18n="am6t" class="t">On-site parking</div><div data-i18n="am6s" class="s">Self-parking in the building</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="loc">
+  <div class="wrap">
+    <div class="lede" style="padding-top:0">
+      <div data-i18n="nb_eb" class="eyebrow" style="color:var(--brass)">The Neighbourhood</div>
+      <h2 data-i18n="nb_h2" class="serif">Everything worth doing, within reach.</h2>
+    </div>
+    <div class="row"><span class="p serif">Bayside Marketplace</span><span data-i18n="nb_3" class="m">3 min walk</span></div>
+    <div class="row"><span class="p serif">College / Bayside Metromover</span><span data-i18n="nb_2" class="m">2 min walk</span></div>
+    <div class="row"><span class="p serif">Kaseya Center &amp; Bayfront Park</span><span data-i18n="nb_w" class="m">Walkable</span></div>
+    <div class="row"><span class="p serif">Miami Beach</span><span class="m">15–20 min</span></div>
+    <div class="row"><span class="p serif">Miami International Airport</span><span class="m">20 min</span></div>
+  </div>
+</section>
+
+<section class="cta-sec" id="contact">
+  <div class="wrap">
+    <div data-i18n="cta_eb" class="eyebrow">Here for you</div>
+    <h2 data-i18n="cta_h2" class="serif">We answer, 24/7.</h2>
+    <p data-i18n="cta_p">Ask us anything — the apartments, the building, parking or the neighbourhood — in English or Spanish, any hour. Book directly with us for our best, unbeatable rates.</p>
+    <div data-i18n="cta_hint" class="hint">Ask us &nbsp;·&nbsp; bottom-right of your screen</div>
+  </div>
+</section>
+
+<footer><div class="wrap">
+  <div class="word">THE CASAS <b>COLLECTION</b></div>
+  <nav class="fnav">
+    <a data-i18n="f_apts" href="#collection">Apartments</a>
+    <a data-i18n="f_res" href="#residence">Residence</a>
+    <a data-i18n="f_checkin" href="checkin.html">Check-in</a>
+    <a data-i18n="f_book" href="https://thecasascollection.holidayfuture.com/all-listings" target="_blank" rel="noopener">Book Direct</a>
+  </nav>
+  <div class="fmeta">230 NE 4th Street, Downtown Miami, FL · © 2026 The Casas Collection</div>
+</div></footer>
+
+<elevenlabs-convai agent-id="agent_6201kwmsmc0rerarvsyqwpr9qwwv"></elevenlabs-convai>
+<script src="https://unpkg.com/@elevenlabs/convai-widget-embed" async type="text/javascript"></script>
+<script>
+  var nav=document.getElementById('nav');
+  var onScroll=function(){ if(window.scrollY>60) nav.classList.add('solid'); else nav.classList.remove('solid'); };
+  window.addEventListener('scroll',onScroll,{passive:true}); onScroll();
+</script>
+
+<script>
+(function(){
+  var ES = {"nav_apts": "Los apartamentos", "nav_res": "La residencia", "nav_checkin": "Check-in", "nav_book": "Reserva directa", "hero_h1": "Vive por encima<br/>del <em>horizonte.</em>", "hero_p": "Cinco apartamentos privados en pleno Downtown de Miami — piscina en la azotea, vistas a la bahía y al horizonte. Resérvalos directamente con nosotros, nunca a través de intermediarios.", "hero_book": "Reserva directa", "hero_checkin": "Check-in", "hero_view": "Ver los apartamentos", "scrollcue": "Desliza", "col_eb": "La colección", "col_h2": "Cinco apartamentos, cada uno con su propia personalidad.", "col_k": "Un dormitorio, hasta tres huéspedes, ventanales de suelo a techo y vistas al horizonte — con calificaciones de 4.8 a 4.95 de huéspedes recientes. Cada estancia incluye la piscina en la azotea, el gimnasio y los salones del edificio.", "est_val": "Downtown Miami · Cinco residencias", "sub1": "Escapada de lujo en Miami · con vista a Brickell", "sub2": "Escapada en las alturas · piscina y gimnasio · vistas al horizonte", "sub3": "Piso alto · jacuzzi · vistas al horizonte", "sub4": "Piso 23 · vistas a la bahía y al horizonte · piscina climatizada", "sub5": "Piso alto · piscina y gimnasio · vistas al horizonte", "view_res": "Ver residencia", "rate_new": "Nuevo", "dir_eb": "Reserva directa", "dir_h2": "El mismo apartamento, sin la <em>comisión del intermediario.</em>", "d_best": "Mejor tarifa", "d_best_c": "Reserva con nosotros al precio más bajo disponible — garantizado.", "d_nofee": "Sin cargos", "d_nofee_c": "Sin cargos adicionales al finalizar. Nunca cobramos comisión de plataforma.", "d_ret": "En cada regreso", "d_ret_c": "Una tarifa especial para huéspedes que regresan, en cada estancia.", "d_note": "Reserva directamente con nosotros y consigue nuestra mejor tarifa, imbatible — un mejor precio para ti, que queda entre nosotros.", "res_eb": "La residencia", "res_h2": "Alea, una torre pensada para tu forma de vivir hoy.", "res_d": "Una torre de 2018 en el corazón del distrito financiero, con hospitalidad y servicios de nivel hotelero en su azotea y planta baja — a pasos de Bayside Marketplace y la bahía.", "am1t": "Piscina y solárium en la azotea", "am1s": "Estilo resort, con jardín de césped", "am2t": "Gimnasio", "am2s": "Sala de spinning y yoga al aire libre", "am3t": "Sala de coworking", "am3s": "Oficinas privadas y escritorios compartidos", "am4t": "Café y bar en el lobby", "am4s": "Café de día, cócteles de noche", "am5t": "Acceso controlado", "am5s": "Entrada segura con llavero electrónico", "am6t": "Estacionamiento en el edificio", "am6s": "Estacionamiento propio en el edificio", "nb_eb": "El vecindario", "nb_h2": "Todo lo que vale la pena, a tu alcance.", "nb_3": "3 min a pie", "nb_2": "2 min a pie", "nb_w": "Caminando", "cta_eb": "Estamos para ti", "cta_h2": "Respondemos, 24/7.", "cta_p": "Pregúntanos lo que quieras — los apartamentos, el edificio, el estacionamiento o el vecindario — en inglés o español, a cualquier hora. Reserva directamente con nosotros y obtén nuestras mejores tarifas, imbatibles.", "cta_hint": "Pregúntanos &nbsp;·&nbsp; abajo a la derecha de tu pantalla", "f_apts": "Apartamentos", "f_res": "Residencia", "f_checkin": "Check-in", "f_book": "Reserva directa"};
+  var nodes = document.querySelectorAll('[data-i18n]');
+  var EN = {};
+  nodes.forEach(function(n){ EN[n.getAttribute('data-i18n')] = n.innerHTML; });
+  function setLang(l){
+    nodes.forEach(function(n){
+      var k = n.getAttribute('data-i18n');
+      var v = (l==='es') ? (ES[k]!=null?ES[k]:EN[k]) : EN[k];
+      if(v!=null) n.innerHTML = v;
+    });
+    document.documentElement.lang = l;
+    try{ localStorage.setItem('casas_lang', l); }catch(e){}
+    document.querySelectorAll('.langswitch button').forEach(function(b){ b.classList.toggle('on', b.getAttribute('data-lang')===l); });
+  }
+  document.querySelectorAll('.langswitch button').forEach(function(b){
+    b.addEventListener('click', function(){ setLang(b.getAttribute('data-lang')); });
+  });
+  var init='en';
+  try{ var s=localStorage.getItem('casas_lang'); if(s){init=s;} else if((navigator.language||'').slice(0,2).toLowerCase()==='es'){init='es';} }catch(e){}
+  setLang(init);
+})();
+</script>
+</body>
+</html>
