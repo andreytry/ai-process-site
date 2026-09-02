@@ -4,10 +4,10 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>aiProcess — Live AI Agent Demos</title>
-<meta name="description" content="aiProcess builds AI voice, chat and back-office agents for real businesses. Talk to a live demo: HVAC receptionist, hotel concierge, CPA automation, insurance quoting."/>
+<meta name="description" content="aiProcess builds AI voice, chat and back-office agents for real businesses, by vertical: accounting firms, HVAC, hospitality, and spas & services."/>
 <link rel="icon" href="aiprocess-logo-badge.png"/>
 <meta property="og:title" content="aiProcess — Live AI Agent Demos"/>
-<meta property="og:description" content="Talk to a live AI agent: HVAC receptionist, hotel concierge, CPA firm automation, insurance quoting."/>
+<meta property="og:description" content="AI agents by vertical: CPA, HVAC, Hospitality, and Spas & Services."/>
 <meta property="og:image" content="https://ai-process.net/system_in_action.png"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
@@ -18,15 +18,15 @@
 </script>
 <style>
 :root{
-  --bg:#080b12; --bg2:#0d1117; --card:#111827; --line:#1e2a3f;
+  --bg:#07030f; --bg2:#0e0718; --card:#150b26; --line:#2b1a48;
   --ink:#f1f5f9; --muted:#94a3b8; --dim:#64748b;
-  --accent:#10b981; --accent2:#059669; --ring:rgba(16,185,129,.35);
+  --accent:#ff2d95; --accent2:#8b5cf6; --ring:rgba(255,45,149,.45);
   --font-display:'Syne',sans-serif; --font-body:'Inter',system-ui,sans-serif;
 }
 *{box-sizing:border-box}
 html,body{margin:0;padding:0}
 body{
-  background:radial-gradient(1200px 600px at 50% -10%,#0f1b2e 0%,var(--bg) 55%) no-repeat,var(--bg);
+  background:radial-gradient(900px 520px at 18% -8%,rgba(255,45,149,.28) 0%,transparent 60%) no-repeat,radial-gradient(1100px 620px at 85% -12%,rgba(139,92,246,.32) 0%,transparent 62%) no-repeat,var(--bg);
   color:var(--ink);font-family:var(--font-body);line-height:1.55;
   -webkit-font-smoothing:antialiased;min-height:100vh;
 }
@@ -38,10 +38,10 @@ header{display:flex;align-items:center;justify-content:space-between;padding:26p
 .brand span{color:var(--accent)}
 .nav a{color:var(--muted);text-decoration:none;font-size:14px;font-weight:500}
 .nav a:hover{color:var(--ink)}
-.hero{padding:52px 0 34px;max-width:760px}
+.hero{padding:52px 0 34px;max-width:780px}
 .eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--accent);
-  background:rgba(16,185,129,.08);border:1px solid var(--ring);padding:6px 12px;border-radius:999px}
-.dot{width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px rgba(16,185,129,.18)}
+  background:rgba(255,45,149,.10);border:1px solid var(--ring);padding:6px 12px;border-radius:999px}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px rgba(255,45,149,.22)}
 h1{font-family:var(--font-display);font-weight:800;font-size:clamp(34px,5.4vw,56px);line-height:1.05;margin:18px 0 14px;letter-spacing:-.5px}
 h1 em{font-style:normal;color:var(--accent)}
 .lede{font-size:clamp(16px,2vw,19px);color:var(--muted);margin:0 0 8px}
@@ -53,42 +53,69 @@ h1 em{font-style:normal;color:var(--accent)}
   border:1px solid var(--line);border-radius:18px;padding:24px 22px 22px;
   text-decoration:none;color:inherit;display:flex;flex-direction:column;gap:12px;
   transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease}
-.card:hover{transform:translateY(-3px);border-color:var(--ring);box-shadow:0 18px 40px -22px rgba(16,185,129,.5)}
+a.card:hover{transform:translateY(-3px);border-color:var(--ring);box-shadow:0 18px 40px -22px rgba(255,45,149,.55)}
+.card.soon{opacity:.62}
 .kicker{display:flex;align-items:center;justify-content:space-between}
 .tag{font-size:12px;font-weight:600;color:var(--accent);letter-spacing:.4px;text-transform:uppercase}
 .badge{font-size:11px;font-weight:600;color:#0b1220;background:var(--accent);padding:3px 9px;border-radius:999px}
+.badge.wip{color:var(--muted);background:transparent;border:1px solid var(--line)}
 .card h3{font-family:var(--font-display);font-weight:700;font-size:22px;margin:2px 0 0}
 .card p{margin:0;color:var(--muted);font-size:15px}
 .chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:2px}
 .chip{font-size:12px;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:4px 10px}
 .go{margin-top:auto;display:inline-flex;align-items:center;gap:8px;font-weight:600;color:var(--ink);font-size:15px}
+.go.muted{color:var(--dim)}
 .go .arw{transition:transform .18s ease}
-a.go{text-decoration:none}
-a.go:hover .arw{transform:translateX(4px)}
-.go2{margin-top:2px}
-.card:hover .go .arw{transform:translateX(4px)}
+a.card:hover .go .arw{transform:translateX(4px)}
 footer{border-top:1px solid var(--line);padding:26px 0 40px;color:var(--dim);font-size:13px;
   display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between}
 footer a{color:var(--muted);text-decoration:none}
 footer a:hover{color:var(--ink)}
+
+body{position:relative}
+body:before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background-image:linear-gradient(rgba(139,92,246,.09) 1px,transparent 1px),linear-gradient(90deg,rgba(139,92,246,.09) 1px,transparent 1px);
+  background-size:44px 44px;mask-image:linear-gradient(180deg,rgba(0,0,0,.9),transparent 70%);-webkit-mask-image:linear-gradient(180deg,rgba(0,0,0,.9),transparent 70%)}
+body:after{content:"";position:fixed;left:0;right:0;top:0;height:2px;z-index:5;background:linear-gradient(90deg,var(--accent),var(--accent2),var(--accent));box-shadow:0 0 18px rgba(255,45,149,.7)}
+h1 em{background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.dot{box-shadow:0 0 0 4px rgba(255,45,149,.22),0 0 14px rgba(255,45,149,.9)}
+.badge{background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff}
+.badge.wip{background:var(--line);color:var(--muted)}
+.card{background:linear-gradient(180deg,rgba(21,11,38,.95),rgba(14,7,24,.98));backdrop-filter:blur(6px)}
+.card:before{content:"";position:absolute;inset:-1px;border-radius:19px;padding:1px;background:linear-gradient(135deg,rgba(255,45,149,.55),rgba(139,92,246,.35) 50%,transparent 80%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;opacity:0;transition:opacity .25s;pointer-events:none}
+.card:hover:before{opacity:1}
+.card:hover{box-shadow:0 22px 50px -24px rgba(139,92,246,.75),0 0 0 1px rgba(255,45,149,.15)}
+.chip{border-color:rgba(139,92,246,.35)}
+.go{color:#fff}
+.go .arw{color:var(--accent)}
+.brand span{background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent}
 </style>
 </head>
 <body>
 <div class="wrap">
   <header>
     <div class="brand"><img src="aiprocess-logo.png" alt="aiProcess"/><b>ai<span>Process</span></b></div>
-    <nav class="nav"><a href="#demos">Demos</a></nav>
+    <nav class="nav"><a href="#verticals">Verticals</a></nav>
   </header>
 
   <section class="hero">
-    <span class="eyebrow"><span class="dot"></span> Live demos · talk to a real agent</span>
-    <h1>AI agents that run the <em>busywork</em>.</h1>
-    <p class="lede">aiProcess builds voice, chat and back-office AI agents for real businesses — answering calls, qualifying leads, chasing documents and closing bookings. Pick a demo below and try one live.</p>
-    <p class="meta">Miami, FL · multilingual (EN / ES / PT / FR) · every demo below is running now.</p>
+    <span class="eyebrow"><span class="dot"></span> Live agents · organized by vertical</span>
+    <h1>AI agents, built for your <em>vertical</em>.</h1>
+    <p class="lede">aiProcess builds voice, chat and back-office AI agents for real businesses — answering calls, winning clients, chasing documents and closing bookings. Pick your industry below and try a live demo.</p>
+    <p class="meta">Miami, FL · multilingual (EN / ES / PT / FR) · demos run live in the browser.</p>
   </section>
 
-  <section class="grid" id="demos">
-    <a class="card" href="/hvac.html">
+  <section class="grid" id="verticals">
+    <a class="card" href="https://cpa.ai-process.net/">
+      <div class="kicker"><span class="tag">CPA</span><span class="badge">Live</span></div>
+      <h3>Accounting Firms</h3>
+      <p>Win new clients and kill the busywork: outbound that fills the pipeline, dormant-client revival, and a QuickBooks missing-document chase — run by agents.</p>
+      <div class="chips"><span class="chip">New clients</span><span class="chip">QuickBooks</span><span class="chip">Client revival</span></div>
+      <span class="go">Open demo <span class="arw">→</span></span>
+    </a>
+
+    <a class="card" href="/hvac/">
       <div class="kicker"><span class="tag">HVAC</span><span class="badge">Live</span></div>
       <h3>AI Receptionist</h3>
       <p>Never miss another call. A 24/7 receptionist that answers, qualifies the lead, captures the details and emails you a summary in under 60 seconds.</p>
@@ -96,44 +123,51 @@ footer a:hover{color:var(--ink)}
       <span class="go">Talk to the agent <span class="arw">→</span></span>
     </a>
 
-    <div class="card" style="cursor:pointer" onclick="if(!event.target.closest('a'))location.href='/portfolio/casas/'">
-      <div class="kicker"><span class="tag">Hotels</span><span class="badge">Live</span></div>
-      <h3>Direct-Booking Concierge</h3>
-      <p>A WhatsApp &amp; voice concierge that answers guest questions instantly and drives direct bookings — keeping the OTA commission in the hotel's pocket.</p>
-      <div class="chips"><span class="chip">WhatsApp</span><span class="chip">Multilingual</span><span class="chip">Direct booking</span></div>
-      <a class="go" href="/portfolio/casas/">Casas Collection · Miami <span class="arw">→</span></a>
-      <a class="go go2" href="https://andreytry.github.io/holidayfuture-site/">Holiday Future · Miami <span class="arw">→</span></a>
-      <a class="go go2" href="/portfolio/marena/">Marena · Santo Domingo <span class="arw">→</span></a>
+    <div class="card">
+      <div class="kicker"><span class="tag">Hospitality</span><span class="badge">Live</span></div>
+      <h3>High-Rise Apartments — Downtown Miami</h3>
+      <p>A 24/7 voice concierge for Downtown Miami luxury apartment collections — answers guest questions, checks live availability and pricing, and books direct, all by voice in English and Spanish. Two live properties in the Alea tower:</p>
+      <div class="chips"><span class="chip">Voice</span><span class="chip">EN/ES</span><span class="chip">Live availability</span><span class="chip">Direct booking</span></div>
+      <a class="go" href="/hotels/casas.html">The Casas Collection <span class="arw">&rarr;</span></a>
+      <a class="go go2" href="/hotels/holidayfuture.html">Holiday Future <span class="arw">&rarr;</span></a>
     </div>
 
-    <a class="card" href="https://cpa.ai-process.net/">
-      <div class="kicker"><span class="tag">CPAs</span><span class="badge">Live</span></div>
-      <h3>Accounting-Firm Automation</h3>
-      <p>For CPA firms: revive dormant clients, chase missing documents straight from QuickBooks, and triage inbound client email — handled end-to-end by agents.</p>
-      <div class="chips"><span class="chip">Email</span><span class="chip">QuickBooks</span><span class="chip">Client revival</span></div>
+    <a class="card" href="/hotels/">
+      <div class="kicker"><span class="tag">Hospitality</span><span class="badge">Live</span></div>
+      <h3>Direct-Booking Concierge — Santo Domingo</h3>
+      <p>A WhatsApp &amp; web concierge for boutique hotels that answers guest questions instantly and drives direct bookings — keeping the OTA commission in your pocket.</p>
+      <div class="chips"><span class="chip">WhatsApp</span><span class="chip">Multilingual</span><span class="chip">Direct booking</span></div>
       <span class="go">Open demo <span class="arw">→</span></span>
     </a>
 
     <a class="card" href="/legal/">
-      <div class="kicker"><span class="tag">Law firms</span><span class="badge">Live</span></div>
-      <h3>Legal Inbox Triage</h3>
-      <p>For law firms: every inbound email sorted, prioritised, deadlines extracted and a draft reply written — in the sender's language. Paste a real email into the live demo.</p>
-      <div class="chips"><span class="chip">Email</span><span class="chip">DE / EN / FR / ES</span><span class="chip">GDPR · hosted in DE</span></div>
-      <span class="go">Open demo <span class="arw">→</span></span>
+      <div class="kicker"><span class="tag">Legal</span><span class="badge">Live</span></div>
+      <h3>Kanzlei-Posteingang</h3>
+      <p>Eingehende E-Mails werden gelesen, einsortiert und bei neuen Mandatsanfragen mit einem fertigen Antwortentwurf beantwortet &mdash; auf Deutsch und Englisch. Gesendet wird nichts ohne Freigabe.</p>
+      <div class="chips"><span class="chip">DE / EN</span><span class="chip">Microsoft 365</span><span class="chip">Antwortentwurf</span></div>
+      <span class="go">Demo &ouml;ffnen <span class="arw">&rarr;</span></span>
     </a>
 
-    <a class="card" href="https://andreytry.github.io/unica-demo/">
-      <div class="kicker"><span class="tag">Insurance</span><span class="badge">Live</span></div>
-      <h3>Conversational Quote</h3>
-      <p>A bilingual voice + chat assistant that qualifies retail insurance leads and returns an instant indicative pre-quote, backed by an online calculator.</p>
-      <div class="chips"><span class="chip">Voice + chat</span><span class="chip">DE / EN</span><span class="chip">Instant quote</span></div>
-      <span class="go">Open demo <span class="arw">→</span></span>
+    <a class="card" href="/claims/">
+      <div class="kicker"><span class="tag">Insurance Claims</span><span class="badge">Live</span></div>
+      <h3>Claim Intake &amp; Lead Routing</h3>
+      <p>Customers report a claim in a single form &mdash; car, liability, home contents, legal or life. Every submission is validated, streamed onto Kafka and routed into Pega, where the case is opened and qualified automatically.</p>
+      <div class="chips"><span class="chip">Kafka</span><span class="chip">Pega</span><span class="chip">5 lines of business</span></div>
+      <span class="go">Open the intake form <span class="arw">&rarr;</span></span>
     </a>
+
+    <div class="card soon">
+      <div class="kicker"><span class="tag">Spas &amp; Services</span><span class="badge wip">Coming soon</span></div>
+      <h3>Booking &amp; Front Desk</h3>
+      <p>An AI front desk for spas, salons and local service businesses — books appointments, answers questions, fills cancellations and follows up, by voice and chat.</p>
+      <div class="chips"><span class="chip">Scheduling</span><span class="chip">Voice + chat</span><span class="chip">Reminders</span></div>
+      <span class="go muted">Demo in build</span>
+    </div>
   </section>
 
   <footer>
     <span>© 2026 aiProcess · Miami, FL</span>
-    <span><a href="/hvac.html">HVAC</a> · <a href="/portfolio/casas/">Hotels</a> · <a href="https://cpa.ai-process.net/">CPAs</a> · <a href="https://andreytry.github.io/unica-demo/">Insurance</a></span>
+    <span><a href="https://cpa.ai-process.net/">CPA</a> · <a href="/hvac/">HVAC</a> · <a href="/hotels/casas.html">Hospitality — Miami</a> &middot; <a href="/hotels/">Hospitality — Santo Domingo</a> ·  &middot; <a href="/legal/">Legal</a> &middot; <a href="/claims/">Insurance Claims</a><span>Spas &amp; Services</span></span>
   </footer>
 </div>
 </body>
