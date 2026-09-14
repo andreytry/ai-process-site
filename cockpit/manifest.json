@@ -1,0 +1,21 @@
+{
+  "name": "Cockpit - aiProcess",
+  "short_name": "Cockpit",
+  "start_url": "/cockpit/",
+  "scope": "/cockpit/",
+  "display": "standalone",
+  "background_color": "#0E0A22",
+  "theme_color": "#0E0A22",
+  "icons": [
+    {
+      "src": "/cockpit/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/cockpit/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
